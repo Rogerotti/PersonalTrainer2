@@ -1,0 +1,41 @@
+﻿@model Framework.Models.Dto.UserDto
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<div class="ui visible inverted left vertical sidebar menu" id="sidebar">
+    <div class="item">
+        <i class="food icon"></i> @Framework.Resources.ButtonLanguage.Diet
+        <div class="menu">
+            <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "Day" ? "active item" : "item")" asp-controller="Diet" asp-action="Day">@Framework.Resources.ButtonLanguage.Diary</a>
+        </div>
+    </div>
+    <div class="item">
+        <i class="barcode icon"></i> @Framework.Resources.UserLanguage.MyProducts
+        <div class="menu">
+            <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "ProductList" ? "active item" : "item")" asp-controller="Diet" asp-action="ProductList">
+                 @Framework.Resources.ButtonLanguage.ProductBase</a>
+            <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "AddEditProduct" ? "active item" : "item")" asp-controller="Diet" asp-action="AddEditProduct">
+                @Framework.Resources.ButtonLanguage.AddProduct</a>
+        </div>
+    </div>
+    <div class="item">
+        <i class="settings icon"></i> @Framework.Resources.UserLanguage.Settings
+        <div class="menu">
+            <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "UserGoals" ? "active item" : "ui huge item")" asp-controller="Diet" asp-action="UserGoals">@Framework.Resources.ButtonLanguage.Goals</a>
+            <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active item" : "ui huge item")" asp-controller="Diet" asp-action="Index">@Framework.Resources.ButtonLanguage.Help</a>
+        </div>
+    </div>
+</div>
+<!--
+    
+
+        <div class="item">
+            <div class="header"></div>
+            <div class="menu">
+                <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "UserGoals" ? "active item" : "ui huge item")" asp-controller="Diet" asp-action="UserGoals">@Framework.Resources.ButtonLanguage.Goals</a>
+                <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active item" : "ui huge item")" asp-controller="Diet" asp-action="Index">@Framework.Resources.ButtonLanguage.Help</a>
+            </div>
+        </div>
+    </div>
+</div>
+    -->

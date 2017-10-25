@@ -1,0 +1,6 @@
+{
+  "projects": [ "src", "test", "src/PersonalTrainer/Modules" ],
+  "sdk": {
+    "version": "2.0.0"
+  }
+}

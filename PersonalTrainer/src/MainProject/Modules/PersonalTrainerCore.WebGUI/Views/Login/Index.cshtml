@@ -1,0 +1,46 @@
+﻿@model  Framework.Models.Dto.UserDto
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = @Framework.Resources.UserLanguage.Login;
+    Layout = "Layout";
+}
+
+<body>
+    <form class="ui form inverted blue segment"  asp-controller="Login" asp-action="Index" method="post">
+
+        <div class="ui three column grid">
+
+            <div class="column centered row">
+                <!--Login column-->
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.UserLanguage.Login</label>
+                        <input placeholder="@Framework.Resources.UserLanguage.Login" type="text" asp-for="Login">
+                    </div>
+                </div>
+            </div>
+
+            <div class="column centered row">
+                <!--Password column-->
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.UserLanguage.Password</label>
+                        <div class="ui left icon input">
+                            <input placeholder="@Framework.Resources.UserLanguage.Password" type="password" asp-for="Password">
+                            <i class="lock icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Login Button-->
+            <div class="column  centered row">
+                <button class="ui button"  type="submit"> @Framework.Resources.UserLanguage.Login</button>
+            </div>
+
+        </div>
+    </form>
+
+</body>
+
+

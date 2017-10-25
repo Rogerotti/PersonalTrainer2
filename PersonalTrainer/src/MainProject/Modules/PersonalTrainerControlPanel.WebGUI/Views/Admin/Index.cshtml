@@ -1,0 +1,33 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Control pannel";
+    Layout = "Layout";
+}
+
+<body>
+    
+@section LeftPanel
+{
+        @await Component.InvokeAsync("AdminPanelLeftMenu")
+}
+    <div>
+        <div class="ui header">Instrukcja obsługi panelu administracyjnego</div>
+        <p></p>
+        <div>Cała nawigacja odbywa się przy użyciu panelu nawigacyjnego występującego po lewej stronie serwisu.</div>
+        <div>W panelu administracyjnym zastosowano podział na trzy podstawowe funkcjonalności:</div>
+        <p></p>
+        <div><b>Zarządzanie użytkownikami</b> - pozwala upoważnionemu na usunięcie konta danego użytkownika, mianowanie na administratora lub zwolnienie z wykonywania pełnionej funkcji.</div>
+        <p></p>
+        <div><b>Zarządzanie produktami</b> - umożliwia administratorowi wgląd do listy artykułów oczekujących, rozpatrzenie zgłoszenia oraz podjęcie decyzji o przyjęciu lub odrzuceniu żywności.</div>
+        <p></p>
+        <div><b>Pomoc</b> - zawiera wszystkie informacje na temat panelu administracyjnego.</div>
+    </div>
+   
+</body>
+
+@section Scripts
+{
+<script>
+
+</script>
+}

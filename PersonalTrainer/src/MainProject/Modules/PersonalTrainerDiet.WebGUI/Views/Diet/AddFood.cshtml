@@ -1,0 +1,132 @@
+﻿@model  Framework.Models.Dto.SearchProductsDto
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Add products";
+    Layout = "Layout";
+}
+
+<style>
+    green {
+        background: #198f28;
+    }
+
+    red {
+        background: #9c0505;
+    }
+
+    yellow {
+        background: #eeca00;
+    }
+
+    .Bold {
+        font-weight: bold;
+    }
+
+    pad-left {
+        padding-left: 2em;
+    }
+
+    pad-right {
+        padding-right: 2em;
+    }
+
+    pad-top {
+        padding-top: 2em;
+    }
+
+    pad-bottom {
+        padding-bottom: 2em;
+    }
+
+    margin-top {
+        margin-top: 2em;
+    }
+
+    form {
+        display: inline-block;
+    }
+</style>
+
+@section LeftPanel
+{
+    @await Component.InvokeAsync("LeftMenu")
+}
+
+<body>
+
+    <div class="ui tabular menu">
+        <div class="active item" data-tab="AllProducts">@Framework.Resources.ProductLanguage.AllProducts</div>
+        <div class="item" data-tab="UserProducts">@Framework.Resources.ProductLanguage.UserProducts</div>
+    </div>
+
+    <div class="ui left icon input">
+        <input id="search-field" placeholder="@Framework.Resources.ProductLanguage.SearchFood" type="text">
+        <i class="food icon"></i>
+    </div>
+
+    <div class="ui active tab" data-tab="AllProducts">
+
+        <div>
+            <form class="ui form segment" asp-controller="Diet" asp-action="AddFood" method="post">
+                <input type="hidden" asp-for="Day" value="@Model.Day" />
+                @await Component.InvokeAsync("AddProductTable", new { products = Model.AllProducts })
+                <input type="submit" name="test33" value="@Framework.Resources.ButtonLanguage.Add" />
+               
+            </form>
+        </div>
+
+    </div>
+
+    <div class="ui tab" data-tab="UserProducts">
+
+        <div>
+            <form class="ui form segment" asp-controller="Diet" asp-action="AddFood" method="post">
+                <input type="hidden" asp-for="Day" value="@Model.Day" />
+                @await Component.InvokeAsync("AddProductTable", new { products = Model.UserProducts })
+                <input type="submit" name="test" value="@Framework.Resources.ButtonLanguage.Add" />
+          
+            </form>
+        </div>
+    </div>
+
+
+
+</body>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('.sortable.table').tablesort();
+
+            $('.tabular.menu .item').tab();
+        });
+    </script>
+
+    <script>
+        $('#search-field').on('keyup', function (e) {
+            if ('' != this.value) {
+                var reg = new RegExp(this.value, 'i'); // case-insesitive
+
+                $('.table tbody').find('tr').each(function () {
+                    var $me = $(this);
+                    if (!$me.children('td:eq(2)').text().match(reg)) {
+                        $me.hide();
+                    } else {
+                        $me.show();
+                    }
+                });
+            } else {
+                $('.table tbody').find('tr').show();
+            }
+        });
+
+        function calc(e)
+        {
+            var cde = e.parentNode
+            var ggg = e.parentNode.children[0];
+            var cccc = e.parentNode.children[0].value;
+            e.parentNode.children[0].value = e.checked;
+        }
+    </script>
+}

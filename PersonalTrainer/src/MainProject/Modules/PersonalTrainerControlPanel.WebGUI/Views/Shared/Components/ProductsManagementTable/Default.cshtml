@@ -1,0 +1,37 @@
+﻿@model  IEnumerable<Framework.Models.Dto.ProductDto>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+ <form id="showTest" method="post" asp-controller="Diet" asp-action="ProductList">
+
+    <table id="table" class="ui sortable selectable celled  table">
+
+        <thead>
+            <tr>
+                <th hidden>Id column</th>
+                <th class="sorted ascending">@Framework.Resources.ProductLanguage.ProductName</th>
+                <th>@Framework.Resources.ProductLanguage.Calories</th>
+                <th>@Framework.Resources.ProductLanguage.Carbs</th>
+                <th>@Framework.Resources.ProductLanguage.Fat</th>
+                <th>@Framework.Resources.ProductLanguage.Protein</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr onclick="showDetails(this)">
+                    <td hidden><input id="selectedProductId" type="hidden" value="@item.ProductId" />
+                    <td>@item.Name</td>
+                    <td>@item.Macro.Calories</td>
+                    <td>@item.Macro.Carbohydrates</td>
+                    <td>@item.Macro.Fat</td>
+                    <td>@item.Macro.Protein</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</form>

@@ -1,0 +1,345 @@
+﻿@model  Framework.Models.View.DayView
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Day";
+    Layout = "Layout";
+}
+
+<style>
+
+   td.h2 {
+color: red;
+}
+        pad-right {
+        padding-right: 2em;
+    }
+
+    pad-top {
+        padding-top: 2em;
+    }
+
+    pad-bottom {
+        padding-bottom: 2em;
+    }
+
+    .margin-top {
+        margin-top: 2em;
+    }
+
+        .margin-bottom {
+        margin-bottom: 2em;
+    }
+</style>
+
+@section LeftPanel
+{
+    @await Component.InvokeAsync("LeftMenu")
+}
+
+<body>
+
+    <form asp-action="Day" asp-controller="Diet" method="post">
+
+        <div class="ui calendar" id="DailyDate">
+            <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="Date" asp-for="Day">
+            </div>
+        </div>
+
+        <div class="ui medium header">@Framework.Resources.ProductLanguage.Breakfast</div>
+        <div class="ui divider"></div>
+
+        <div class="margin-bottom" >
+            @{
+                if (Model.DailyProduct.Any(x => x.MealType == Framework.Models.MealType.Breakfast))
+                {
+                    var result = Model.DailyProduct.Where(x => x.MealType == Framework.Models.MealType.Breakfast);
+                    @await Component.InvokeAsync("DailyProductTable", new { id = "Breakfast",  list = result.ToList() })
+                }
+            }
+        </div>
+
+        <button class="ui basic button" value="0" name="buttonType">
+            <i class="food icon"></i>
+            @Framework.Resources.ButtonLanguage.AddProducts
+        </button>
+
+        <div class="ui medium header">@Framework.Resources.ProductLanguage.Dinner</div>
+        <div class="ui divider"></div>
+        <div class="margin-bottom">
+            @{
+                if (Model.DailyProduct.Any(x => x.MealType == Framework.Models.MealType.Dinner))
+                {
+                    var result = Model.DailyProduct.Where(x => x.MealType == Framework.Models.MealType.Dinner);
+                    @await Component.InvokeAsync("DailyProductTable", new { id = "Dinner", list = result.ToList() })
+                }
+            }
+        </div>
+
+        <button class="ui basic button" value="1" name="buttonType">
+            <i class="food icon"></i>
+            @Framework.Resources.ButtonLanguage.AddProducts
+        </button>
+
+        <div class="ui medium header">@Framework.Resources.ProductLanguage.Supper</div>
+        <div class="ui divider"></div>
+        <div class="margin-bottom">
+            @{
+                if (Model.DailyProduct.Any(x => x.MealType == Framework.Models.MealType.Supper))
+                {
+                    var result = Model.DailyProduct.Where(x => x.MealType == Framework.Models.MealType.Supper);
+                    @await Component.InvokeAsync("DailyProductTable", new { id = "Supper", list = result.ToList() })
+                }
+            }
+        </div>
+
+        <button class="ui basic button" value="2" name="buttonType">
+            <i class="food icon"></i>
+            @Framework.Resources.ButtonLanguage.AddProducts
+        </button>
+
+        <div class="ui medium header">@Framework.Resources.ProductLanguage.Snacks</div>
+        <div class="ui divider"></div>
+        <div class="margin-bottom">
+            @{
+                if (Model.DailyProduct.Any(x => x.MealType == Framework.Models.MealType.Snacks))
+                {
+                    var result = Model.DailyProduct.Where(x => x.MealType == Framework.Models.MealType.Snacks);
+                    @await Component.InvokeAsync("DailyProductTable", new { id = "Snacks", list = result.ToList() })
+                }
+            }
+        </div>
+
+        <button class="ui basic button" value="3" name="buttonType">
+            <i class="food icon"></i>
+           @Framework.Resources.ButtonLanguage.AddProducts
+        </button>
+
+        <div class="ui divider"></div>
+
+        <table class="ui very basic table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>@Framework.Resources.ProductLanguage.Protein</th>
+                    <th>@Framework.Resources.ProductLanguage.Fat</th>
+                    <th>@Framework.Resources.ProductLanguage.Carbs</th>
+                    <th>@Framework.Resources.ProductLanguage.Calories</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Framework.Resources.UserLanguage.Current</td>
+                    <td id="CurrentProtein">@Model.DayProteins</td>
+                    <td id="CurrentFat">@Model.DayFat</td>
+                    <td id="CurrentCarbs">@Model.DayCarbohydrates</td>
+                    <td id="CurrentCalories">@Model.DayCalories</td>
+                </tr>
+
+                <tr>
+                    <td>@Framework.Resources.UserLanguage.Avaible</td>
+                    <td id="AvaibleProtein">@Model.AvaibleProteins</td>
+                    <td id="AvaibleFat">@Model.AvaibleFat</td>
+                    <td id="AvaibleCarbs">@Model.AvaibleCarbohydrates</td>
+                    <td id="AvaibleCalories">@Model.AvaibleCalories</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td id="ResultProtein"></td>
+                    <td id="ResultFat"></td>
+                    <td id="ResultCarbs"></td>
+                    <td id="ResultCalories"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="ui blue button" value="4" name="buttonType">
+            @Framework.Resources.ButtonLanguage.Confirm
+        </button>
+    </form>
+
+
+</body>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function ()
+        {
+            $('.sortable.table').tablesort();
+
+            $(".NumericValidation").keydown(function (e) {
+                // Sprawdzenie znaków specjalnych.
+                if (KeyIsSpecialCharacter(e))
+                    return;
+
+                var selectionLength = this.selectionEnd - this.selectionStart
+                if (selectionLength != this.value.length) {
+                    if (this.value[0] == 0) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+
+                // Upewnia się że jest to liczba jeżeli nie stopuje wciśnięcie
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105))
+                    e.preventDefault();
+            });
+
+
+            function KeyIsSpecialCharacter(e) {
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                    // Pozwala na: Ctrl+A
+               (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Pozwala na: Ctrl+C
+               (e.keyCode == 67 && e.ctrlKey === true) ||
+                    // Pozwala na: Ctrl+X
+               (e.keyCode == 88 && e.ctrlKey === true) ||
+                    // Pozwala na: home, end, left, right
+               (e.keyCode >= 35 && e.keyCode <= 39)) { return true; }
+
+                return false
+            }
+            UpdateCurrenCalories()
+
+        });
+
+        $('#DailyDate').calendar({
+            type: 'date',
+            text: {
+                days: ['N', 'P', 'W', 'ś', 'C', 'P', 'S'],
+                months: ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'],
+                monthsShort: ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'],
+                today: 'Dzisiaj',
+                now: 'Teraz',
+                am: 'AM',
+                pm: 'PM'
+            },
+            onChange: function (date, text) {
+                var ref = "/Diet/Day/"
+
+                var day = date.getDate();
+                var monthIndex;
+                var test = date.getMonth() + 1;
+                if (test < 10) {
+                    monthIndex = "0";
+                    monthIndex += test;
+                }
+                else
+                    monthIndex = test;
+               
+
+                var year = date.getFullYear();
+
+                ref += day + "-" + monthIndex + "-" + year;
+                window.location.href = ref;
+            }
+        });
+
+
+        $('.BreakfestTable').on('keyup', ".ChangeMacro", function (e) {
+
+            var input = $(this).children();
+            var newQuant = input.val();
+            var tr = $(this).parent().parent();
+
+            var quant = parseFloat(tr[0].cells[9].children[0].value.replace(/,/, '.'));
+            var prevProtein = parseFloat(tr[0].cells[10].children[0].value.replace(/,/, '.'));
+            var prevFat = parseFloat(tr[0].cells[11].children[0].value.replace(/,/, '.'));
+            var prevCarb = parseFloat(tr[0].cells[12].children[0].value.replace(/,/, '.'));
+            var prevCalories = parseFloat(tr[0].cells[13].children[0].value.replace(/,/, '.'));
+
+            var ratio = Math.round(newQuant * 100.0 / quant) / 100
+
+            tr[0].cells[2].innerHTML = (Math.round(prevProtein * ratio * 100) / 100).toString().replace('.', ',');
+            tr[0].cells[3].innerHTML = (Math.round(prevFat * ratio * 100) / 100).toString().replace('.', ',');
+            tr[0].cells[4].innerHTML = (Math.round(prevCarb * ratio * 100) / 100).toString().replace('.', ',');
+            tr[0].cells[5].innerHTML = (Math.round(prevCalories * ratio * 100) / 100).toString().replace('.', ',');
+
+            UpdateCurrenCalories()
+        });
+
+        $('.BreakfestTable').on('click', ".DeleteMacro", function (e) {
+            var tr = $(this).parent().parent();
+            var body = tr.parent();
+            var table = body.parent();
+            tr.remove();
+            if (body[0].childElementCount == 0) {
+                table.remove();
+            }
+            UpdateCurrenCalories()
+        });
+
+
+        function UpdateCurrenCalories() {
+            var proteins = document.getElementsByName("productProtein")
+            var fats = document.getElementsByName("productFat")
+            var carbs = document.getElementsByName("productCarbs")
+            var calories = document.getElementsByName("productCalories")
+
+            var proteinCount = parseFloat(0)
+            var fatCount = parseFloat(0)
+            var carbsnCount = parseFloat(0)
+            var caloriesCount = parseFloat(0)
+
+            for (var i = 0; i < proteins.length; i++) {
+                proteinCount += parseFloat(proteins[i].innerHTML.replace(/,/, '.'))
+                fatCount += parseFloat(fats[i].innerHTML.replace(/,/, '.'))
+                carbsnCount += parseFloat(carbs[i].innerHTML.replace(/,/, '.'))
+                caloriesCount += parseFloat(calories[i].innerHTML.replace(/,/, '.'))
+            }
+
+            var currentProtein = (Math.round(proteinCount * 100) / 100).toString().replace('.', ',');
+            var currentFat = (Math.round(fatCount * 100) / 100).toString().replace('.', ',');
+
+            var currentCarbs = (Math.round(carbsnCount * 100) / 100).toString().replace('.', ',');
+            var currentCalories = (Math.round(caloriesCount * 100) / 100).toString().replace('.', ',');
+
+            document.getElementById("CurrentProtein").innerHTML = currentProtein
+            document.getElementById("CurrentFat").innerHTML = currentFat
+            document.getElementById("CurrentCarbs").innerHTML = currentCarbs
+            document.getElementById("CurrentCalories").innerHTML = currentCalories
+
+            var avaibleProteins = parseFloat(document.getElementById("AvaibleProtein").innerHTML)
+            var avaibleFat = parseFloat(document.getElementById("AvaibleFat").innerHTML)
+            var avaibleCarbs = parseFloat(document.getElementById("AvaibleCarbs").innerHTML)
+            var avaibleCalories = parseFloat(document.getElementById("AvaibleCalories").innerHTML)
+
+
+            var resultProteins = avaibleProteins - proteinCount;
+            var resultFat = avaibleFat - fatCount;
+            var resultCarbs = avaibleCarbs - carbsnCount;
+            var resultCalories = avaibleCalories - caloriesCount;
+
+            var proteinElement = document.getElementById("ResultProtein")
+            SetFontColorDepensOnCalories(proteinElement, resultProteins)
+            proteinElement.innerHTML = Math.floor(resultProteins * 100) / 100
+
+            var fatElement = document.getElementById("ResultFat")
+            SetFontColorDepensOnCalories(fatElement, resultFat)
+            fatElement.innerHTML = Math.floor(resultFat * 100) / 100
+
+            var carbsElement = document.getElementById("ResultCarbs")
+            SetFontColorDepensOnCalories(carbsElement, resultCarbs)
+            carbsElement.innerHTML = Math.floor(resultCarbs * 100) / 100
+
+            var caloriesElement = document.getElementById("ResultCalories")
+            SetFontColorDepensOnCalories(caloriesElement, resultCalories)
+            caloriesElement.innerHTML = Math.floor(resultCalories * 100) / 100
+        }
+
+        // Ustawia kolor czcionki w zależności od ilości kalori
+        // dodatnie zielone
+        // równe 0 czarne
+        // ujemne czerwone
+        function SetFontColorDepensOnCalories(element, amount) {
+            if (amount > 0)
+                element.style.color = "Green"
+            else if (amount == 0)
+                element.style.color = "Black"
+            else
+                element.style.color = "Red"
+        }
+</script>
+}

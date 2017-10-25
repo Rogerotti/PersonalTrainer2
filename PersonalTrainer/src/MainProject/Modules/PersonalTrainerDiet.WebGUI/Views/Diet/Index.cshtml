@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "Layout";
+}
+
+@section LeftPanel
+{
+    @await Component.InvokeAsync("LeftMenu")
+}
+
+
+<body>
+    <div class="ui header">Instrukcja obsługi panelu diety</div>
+    <p></p>
+    <div>   Cała nawigacja odbywa się przy użyciu panelu nawigacyjnego występującego po lewej stronie serwisu.</div>
+    <div>W panelu diety zastosowano podział na trzy podstawowe funkcjonalności:</div>
+    <p></p>
+    <div><b>Dieta</b> - odpowiedzialna za zarządzanie dniami żywieniowymi. Wydzielony został aktualny dzień a także selektor pozwalający na przeglądanie naszych poprzednich wpisów.</div>
+    <p></p>
+   <div><b>Moje produkty</b> - pozwala na dodawanie i przeglądanie listy samodzielnie dodanych produktów, wraz z ich pełną konfiguracją oraz na zgłoszenie artykułu przez co będzie dostępny dla innych użytkowników.</div>
+    <p></p>
+    <div><b>Ustawienia</b> - zawierają instrukcje obsługi, a także ustawienia bilansu kalorycznego przez użytkownika, wykorzystywane podczas zarządzania dniami żywieniowymi.</div>
+</body>
+
+
+@section Scripts
+{
+
+}

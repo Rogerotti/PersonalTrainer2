@@ -1,0 +1,102 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Personal trainer</title>
+
+        <environment names="Development">
+            <link rel="stylesheet" href="~/lib/semantic/dist/semantic.css" />
+            <link href="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.css" rel="stylesheet" type="text/css" />
+
+        </environment>
+
+        <environment names="Staging,Production">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
+                  asp-fallback-href="~/lib/semantic/dist/semantic.min.css"
+                  asp-fallback-test-class="transition" asp-fallback-test-property="animation-iteration-count" asp-fallback-test-value="1" />
+            <link href="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.css" rel="stylesheet" type="text/css" />
+        </environment>
+
+    </head>
+
+    <body>
+        <Style>
+            .margin-top {
+                margin-top: 2em;
+            }
+
+            .margin-left {
+                margin-left: 2em;
+            }
+
+            .Medium-margin-top {
+                margin-top: 2em;
+            }
+
+            .red {
+                color: red;
+            }
+        </Style>
+
+        <header>
+            @{
+                byte[] name;
+                var result = Context.Session.TryGetValue("userName", out name);
+            }
+
+        @await Component.InvokeAsync("TopMenu", new { loggedIn = result, username = name })
+        </header>
+
+            <div class="ui column grid container">
+
+                <div class="two wide column">
+                    @RenderSection("LeftPanel", required: false)
+                </div>
+                <div class="thirteen wide column">
+                    <div class="ui center content push">
+                        @RenderBody()
+                    </div>
+                </div>
+
+            </div>
+            <environment names="Development">
+                <script src="~/lib/jquery/dist/jquery.js"></script>
+                <script src="~/lib/semantic/dist/semantic.js"></script>
+                <script src="http://semantic-ui.com/javascript/library/tablesort.js"></script>
+
+     
+                <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.js"></script>
+
+                <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+            </environment>
+
+            <environment names="Staging,Production">
+                <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                        asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                        asp-fallback-test="window.jQuery">
+                </script>
+
+
+                <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.js"></script>
+
+                <script src="http://semantic-ui.com/javascript/library/tablesort.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js"
+                        asp-fallback-src="~/lib/semantic/dist/js/semantic.min.js"
+                        asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.site">
+
+                </script>
+                <script src="~/js/site.min.js" asp-append-version="true"></script>
+
+            </environment>
+
+            @RenderSection("scripts", required: false)
+
+            @await Component.InvokeAsync("ErrorDisplayer")
+</body>
+
+</html>
+

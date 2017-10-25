@@ -1,0 +1,283 @@
+﻿@model  Framework.Models.Dto.ProductListDto
+@using System.Text.RegularExpressions
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Baza produktów";
+    Layout = "Layout";
+}
+
+<style>
+    green { background: #198f28;}
+
+    red { background:#9c0505}
+
+    yellow { background :#eeca00}
+
+    .Bold{ font-weight: bold;}
+
+    pad-left { padding-left: 2em; }
+
+    pad-right { padding-right: 2em; }
+
+    pad-top { padding-top: 2em; }
+
+    pad-bottom { padding-bottom: 2em; }
+
+    margin-top {margin-top: 2em;}
+
+    form {display: inline-block;}
+
+</style>
+
+@section LeftPanel
+{
+    @await Component.InvokeAsync("LeftMenu")
+}
+
+<body>
+
+    <div class="ui two column middle aligned very relaxed stackable grid">
+
+        <div class="two width column">
+
+            <form id="showTest" method="post" asp-controller="Diet" asp-action="ProductList" >
+
+                <table id="table" class="ui sortable selectable celled  table" >
+
+                        <thead>
+                            <tr>
+                                <th hidden>Id column</th>
+                                <th class="sorted ascending">@Framework.Resources.ProductLanguage.ProductName</th>
+                                <th>@Framework.Resources.ProductLanguage.Calories</th>
+                                <th>@Framework.Resources.ProductLanguage.Carbs</th>
+                                <th>@Framework.Resources.ProductLanguage.Fat</th>
+                                <th>@Framework.Resources.ProductLanguage.Protein</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                           @foreach (var item in Model.ProductList)
+                           {
+                               if (item.State == Framework.Models.ProductState.Private)
+                               {
+                                @:<tr onclick="showDetails(this)">
+                               }
+                               else if (item.State == Framework.Models.ProductState.Pending)
+                               {
+                                @:<tr bgcolor="yellow" onclick="showDetails(this)">
+                               }
+                               else if (item.State == Framework.Models.ProductState.Denied)
+                               {
+                                @:<tr bgcolor="red" onclick="showDetails(this)">
+                               }
+                               else if (item.State == Framework.Models.ProductState.Accepted)
+                               {
+                                @:<tr bgcolor="green" onclick="showDetails(this)">
+                               }
+                                    <td hidden><input id="selectedProductId" type="hidden" value="@item.ProductId" /></td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Macro.Calories</td>
+                                    <td>@item.Macro.Carbohydrates</td>
+                                    <td>@item.Macro.Fat</td>
+                                    <td>@item.Macro.Protein</td>
+                            }
+                                </tr>
+                    </tbody>
+             
+                </table>
+
+            </form>
+
+         </div>
+
+        <div class="column" >
+
+            <div class="ui seven column row">
+
+                <div class="column">
+                    <div class="field" >
+                        <div>
+                            <strong>@Framework.Resources.ProductLanguage.ProductName :</strong>
+                            <label id="detailsName"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <strong>@Framework.Resources.ProductLanguage.ProductManufacturer :</strong>
+                        <label id="detailsManufacturer"></label>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <strong>@Framework.Resources.ProductLanguage.Type : </strong>
+                        <label id="detailsType"></label>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <strong>@Framework.Resources.ProductLanguage.Calories :</strong>
+                        <label id="detailsCalories"></label>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <strong>@Framework.Resources.ProductLanguage.Protein :</strong>
+                        <label id="detailsProtein"></label>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <strong>@Framework.Resources.ProductLanguage.Fat :</strong>
+                        <label id="detailsFat"></label>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <strong>@Framework.Resources.ProductLanguage.Carbs :</strong>
+                        <label id="detailsCarbs"></label>
+                    </div>
+                </div>
+
+                <div class="column row">
+                    <form asp-controller="Diet" asp-action="AddEditProduct" method="get">
+                        <input type="hidden" name="productId" value="" />
+                        <button disabled id="editButton" class="ui blue tiny button" type="submit">@Framework.Resources.ButtonLanguage.Edit</button>
+                    </form>
+
+                    <form asp-controller="Diet" asp-action="DeleteProduct" method="post">
+                        <input type="hidden" name="productDeleteId" value="" />
+                        <button disabled id="deleteButton" class="ui blue tiny button" type="submit">@Framework.Resources.ButtonLanguage.Delete</button>
+                    </form>
+
+                    <form asp-controller="Diet" asp-action="SubscribeProduct" method="post">
+                        <input type="hidden" name="productSubscribeId" value="" />
+                        <button disabled id="subscribeButton" class="ui blue tiny button" type="submit">@Framework.Resources.ButtonLanguage.Report</button>
+                    </form>
+
+                    <form asp-controller="Diet" asp-action="CancelSubscription" method="post">
+                        <input  type="hidden" name="productCancelSubscribeId" value="" />
+                        <button  disabled id="cancelSubscribeButton" class="ui blue tiny button" type="submit">@Framework.Resources.ButtonLanguage.CancelReport</button>
+                    </form>
+                </div>
+            <div>
+
+        </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            $('.sortable.table').tablesort();
+        });
+
+        function showDetails(b)
+        {
+            var rows = $('#table > tbody > tr')
+            for (var i = 0; i < rows.length; i++)
+                rows.eq(i).attr('class', ' ');
+
+            $(b).attr('class', 'active')
+
+            var guidId = $("[id='selectedProductId']", b).val();
+            var data = { Id: guidId };
+
+            $.ajax({
+            url: '@Url.Action("GetProductDetails", "Diet")',
+            type: "POST",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (msg)
+            {
+                var name = "";
+                var manufacturer = "";
+                var calories = "";
+                var proteins = "";
+                var fat = "";
+                var carbohydrates = "";
+                var typeDisplayName = "";
+
+                if (typeof (msg.name) != "undefined")
+                    name = msg.name;
+
+                if (typeof (msg.manufacturer) != "undefined")
+                    manufacturer = msg.manufacturer;
+
+                if (typeof (msg.macro.calories) != "undefined")
+                    calories = msg.macro.calories;
+
+                if (typeof (msg.macro.protein) != "undefined")
+                    proteins = msg.macro.protein;
+
+                if (typeof (msg.macro.fat) != "undefined")
+                    fat = msg.macro.fat;
+
+                if (typeof (msg.macro.carbohydrates) != "undefined")
+                    carbohydrates = msg.macro.carbohydrates;
+
+                if (typeof (msg.typeDisplayName) != "undefined")
+                    typeDisplayName = msg.typeDisplayName;
+
+            $('#detailsName').text(name);
+            $('#detailsManufacturer').text(manufacturer);
+            $('#detailsCalories').text(calories);
+            $('#detailsProtein').text(proteins);
+            $('#detailsFat').text(fat);
+            $('#detailsCarbs').text(carbohydrates);
+            $('#detailsType').text(typeDisplayName);
+            $('#editButton').removeAttr('disabled');
+            $('#deleteButton').removeAttr('disabled');
+
+            $('input[name="productId"]').val(guidId);
+            $('input[name="productDeleteId"]').val(guidId);
+            var state = msg.state;
+            if (state == 0 || state == 2)
+            {
+            $('#cancelSubscribeButton').attr('disabled','');
+            $('#subscribeButton').removeAttr('disabled');
+            $('input[name="productSubscribeId"]').val(guidId);
+            }
+            else if (state == 1) {
+            $('#cancelSubscribeButton').removeAttr('disabled');
+            $('#subscribeButton').attr('disabled', '');
+            $('input[name="productCancelSubscribeId"]').val(guidId);
+            }
+            else
+            {
+            $('#editButton').attr('disabled', '');
+            $('#deleteButton').attr('disabled', '');
+            $('#subscribeButton').attr('disabled', '');
+            $('#cancelSubscribeButton').attr('disabled', '');
+            }
+
+
+            },
+
+            error: function (xhr, ajaxOptions, thrownError)
+            {
+            alert(xhr.status);
+            alert(thrownError);
+            }
+            });
+        }
+
+        </script>
+}

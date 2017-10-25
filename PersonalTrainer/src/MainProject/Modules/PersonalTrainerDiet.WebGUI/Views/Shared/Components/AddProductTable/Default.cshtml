@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Framework.Models.Dto.ProductDto>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+    <table id="table" class="ui sortable selectable celled  table">
+
+        <thead>
+            <tr>
+                <th hidden>Id column</th>
+                <th>@Framework.Resources.ButtonLanguage.Add</th>
+                <th class="sorted ascending">@Framework.Resources.ProductLanguage.ProductName</th>
+                <th>@Framework.Resources.ProductLanguage.Calories</th>
+                <th>@Framework.Resources.ProductLanguage.Carbs</th>
+                <th>@Framework.Resources.ProductLanguage.Fat</th>
+                <th>@Framework.Resources.ProductLanguage.Protein</th>
+                <th>@Framework.Resources.ProductLanguage.Quantity</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var product in @Model)
+            {
+                <tr>
+                    <td hidden><input type="hidden" name="ids" value="@product.ProductId" /></td>
+                    <td>
+                        <input type="hidden" name="tess" value="false" />
+                        <input type="checkbox"  name="testt" onclick="calc(this)" />
+                    </td>
+                    <td>@product.Name</td>
+                    <td>@product.Macro.Calories</td>
+                    <td>@product.Macro.Carbohydrates</td>
+                    <td>@product.Macro.Fat</td>
+                    <td>@product.Macro.Protein</td>
+                    <td><input class="test2" name="quantity" type="text" value="@product.Macro.Quantity" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+

@@ -1,0 +1,211 @@
+﻿@model  Framework.Models.View.AddEditProductView
+@using System.Text.RegularExpressions
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "Layout";
+}
+
+@section LeftPanel
+{
+    @await Component.InvokeAsync("LeftMenu")
+}
+
+<body>
+    <form class="ui form segment" asp-controller="Diet" asp-action="AddEditProduct" method="post">
+        <div class="ui grid">
+
+            <div class="three column row">
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.ProductName</label>
+                        <input placeholder=@Framework.Resources.ProductLanguage.ProductName type="text" asp-for="Name">
+                        <span asp-validation-for="Name" class="ui red header"></span>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.ProductManufacturer</label>
+                        <input placeholder=@Framework.Resources.ProductLanguage.ProductManufacturer type="text" asp-for="Manufacturer">
+                        <span asp-validation-for="Manufacturer" class="ui red header"></span>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.Type</label>
+                        <div id="typeDropdown" class="ui selection dropdown" asp-for="Type">
+                            <input name="Type" type="hidden">
+                            <div class="default text">Type</div>
+                            <div class="menu">
+                                @foreach (var item in @Html.GetEnumSelectList(typeof(Framework.Models.ProductType)))
+                                {
+                                    <div class="item" data-value="@item.Value">@item.Text</div>
+                                }
+                            </div>
+                        </div>
+                        <span asp-validation-for="Type" class="ui red header"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="three column row">
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.Protein</label>
+                        <input class="NumericValidation" placeholder=@Framework.Resources.ProductLanguage.Protein type="text" asp-for="Macro.Protein">
+                        <span asp-validation-for="Macro.Protein" class="ui red header"></span>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.Fat</label>
+                        <input class="NumericValidation" placeholder=@Framework.Resources.ProductLanguage.Fat type="text" asp-for="Macro.Fat">
+                        <span asp-validation-for="Macro.Fat" class="ui red header"></span>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.Carbs</label>
+                        <input class="NumericValidation" placeholder=@Framework.Resources.ProductLanguage.Carbs type="text" asp-for="Macro.Carbohydrates">
+                        <span asp-validation-for="Macro.Carbohydrates" class="ui red header"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="three column row">
+
+                <div class="column">
+                    <div class="field">
+                        <label> @Framework.Resources.ProductLanguage.Calories</label>
+                        <input class="NumericValidation" placeholder=@Framework.Resources.ProductLanguage.Calories type="text" asp-for="Macro.Calories">
+                        <span asp-validation-for="Macro.Calories" class="ui red header"></span>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.QuantityType</label>
+                        <div id="quantityTypeDropdown" class="ui selection dropdown" asp-for="Macro.QuantityType">
+                            <input name="Macro.QuantityType">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Choose quantity type</div>
+                            <div class="menu">
+                                @foreach (var item in @Html.GetEnumSelectList(typeof(Framework.Models.QuantityType)))
+                                {
+                                    <div class="item" data-value="@item.Value">@item.Text</div>
+                                }
+                            </div>
+                        </div>
+                        <span asp-validation-for="Macro.QuantityType" class="ui red header"></span>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label>@Framework.Resources.ProductLanguage.Quantity</label>
+                        <input class="NumericValidation" placeholder="@Framework.Resources.ProductLanguage.Quantity" type="text" asp-for="Macro.Quantity">
+                        <span asp-validation-for="Macro.Quantity" class="ui red header"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="column centered">
+                <button class="ui blue button" type="submit">
+                    @{
+                        if (Model.Mode == Framework.Models.Mode.Add)
+                        {
+                            @Framework.Resources.ButtonLanguage.Add
+                        }
+                        else
+                        { 
+                             @Framework.Resources.ButtonLanguage.Edit 
+                        }
+                    }
+                </button>
+            </div>
+
+        </div>
+
+        <input id="typeToSelect" type="hidden" value="@((Int16) Model.Type)" />
+        <input id="quantityTypeSelect" type="hidden" value="@((Int16) Model.Macro.QuantityType)" />
+        <input type="hidden" asp-for="ProductId">
+        <input type="hidden" asp-for="Mode">
+    </form>
+
+</body>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function ()
+        {
+
+            $(".NumericValidation").keydown(function (e)
+            {
+                // Sprawdzenie znaków specjalnych.
+                if (KeyIsSpecialCharacter(e))
+                    return;
+
+                var selectionLength = this.selectionEnd - this.selectionStart
+                if (selectionLength != this.value.length)
+                {
+                    if (this.value.includes("0") && this.value.includes(",") === false && e.keyCode !== 188) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    if (this.value[0] === 0 && this.value.includes(",") && e.keyCode !== 188) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+
+                // Upewnia się że jest to liczba jeżeli nie stopuje wciśnięcie
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || (e.keyCode > 105  && e.keyCode !== 188)) )
+                    e.preventDefault();
+
+                if (this.value.includes(",") && e.keyCode === 188)
+                    e.preventDefault();
+            });
+
+            $('.sortable.table').tablesort();
+
+            $('.ui.dropdown').dropdown('refresh');
+
+            setTimeout(function ()
+            {
+                var type = document.getElementById("typeToSelect").value
+                var quantityType = document.getElementById("quantityTypeSelect").value
+
+                $('#typeDropdown').dropdown('set selected', type);
+                $('#quantityTypeDropdown').dropdown('set selected', quantityType);
+            }, 1);
+
+        });
+
+        function KeyIsSpecialCharacter(e)
+        {
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                // Pozwala na: Ctrl+A
+           (e.keyCode == 65 && e.ctrlKey === true) ||
+                // Pozwala na: Ctrl+C
+           (e.keyCode == 67 && e.ctrlKey === true) ||
+                // Pozwala na: Ctrl+X
+           (e.keyCode == 88 && e.ctrlKey === true) ||
+                // Pozwala na: home, end, left, right
+           (e.keyCode >= 35 && e.keyCode <= 39)) { return true; }
+
+            return false
+        }
+    </script>
+
+
+}

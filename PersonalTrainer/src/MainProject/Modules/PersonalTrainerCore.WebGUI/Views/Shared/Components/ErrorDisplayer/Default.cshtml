@@ -1,0 +1,19 @@
+﻿@model  IEnumerable<String>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    if (Model != null && Model.Count() != 0)
+    {
+        <div class="ui center message">
+            <div class="header">
+                @Framework.Resources.ErrorLanguage.ValidationError
+            </div>
+            <ul class="list">
+                @foreach (var message in Model)
+                {
+                    <li>@message</li>
+                }
+            </ul>
+        </div>
+    }
+}

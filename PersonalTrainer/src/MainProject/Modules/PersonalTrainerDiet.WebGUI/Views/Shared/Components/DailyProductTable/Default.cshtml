@@ -1,0 +1,56 @@
+﻿@model Framework.Models.View.DailyProductTableViewDto
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div>
+    <table class="ui sortable table BreakfestTable" id="@Model.Id">
+        <thead>
+            <tr>
+                <th hidden></th>
+                <th class="sorted ascending">@Framework.Resources.ProductLanguage.ProductName</th>
+                <th>@Framework.Resources.ProductLanguage.Protein</th>
+                <th>@Framework.Resources.ProductLanguage.Fat</th>
+                <th>@Framework.Resources.ProductLanguage.Carbs</th>
+                <th>@Framework.Resources.ProductLanguage.Calories</th>
+                <th>@Framework.Resources.ProductLanguage.Quantity</th>
+                <th></th>
+                <th hidden></th>
+                <th hidden></th>
+                <th hidden></th>
+                <th hidden></th>
+                <th hidden></th>
+                <th hidden></th>
+                <th hidden></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in @Model.List)
+            {
+                <tr>
+                    <td hidden id="@item.Product.ProductId"><input type="hidden" /></td>
+                    <td >@item.Product.Name</td>
+                    <td name="productProtein">@item.CurrentMacro.Protein</td>
+                    <td name="productFat">@item.CurrentMacro.Fat</td>
+                    <td name="productCarbs">@item.CurrentMacro.Carbohydrates</td>
+                    <td name="productCalories">@item.CurrentMacro.Calories</td>
+                    <td>
+                        <div class="ui input ChangeMacro">
+                            <input class="NumericValidation" name="quantity" type="text" value="@item.CurrentMacro.Quantity" />
+                        </div>
+                    </td>
+                    <td><input class="ui blue button DeleteMacro"  type="button" value="X" ></td>
+                    <td hidden><input type="hidden" name="productId" value="@item.Product.ProductId" /></td>
+                    <td hidden><input type="hidden" value="@item.Product.Macro.Quantity" /></td>
+                    <td hidden><input type="hidden" value="@item.Product.Macro.Protein" /></td>
+                    <td hidden><input type="hidden" value="@item.Product.Macro.Fat"/></td>
+                    <td hidden><input type="hidden" value="@item.Product.Macro.Carbohydrates" /></td>
+                    <td hidden><input type="hidden" value="@item.Product.Macro.Calories" /></td>
+                    <td hidden><input type="hidden" name="productMealType" value="@((Int32)item.MealType)" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
