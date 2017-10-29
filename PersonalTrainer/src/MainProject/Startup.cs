@@ -29,9 +29,8 @@ namespace MainProject
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = @"Server=(localdb)\MSSQLLocalDB;Database=PersonalTrainer;Trusted_Connection=True;";
-
             services.AddDbContext<DefaultContext>(
-                options => options.UseSqlServer(connection, b => b.MigrationsAssembly("PersonalTrainer"))
+                options => options.UseSqlServer(connection, b => b.MigrationsAssembly("MainProject"))
                 , ServiceLifetime.Singleton);
 
             services.AddSession(options => {
