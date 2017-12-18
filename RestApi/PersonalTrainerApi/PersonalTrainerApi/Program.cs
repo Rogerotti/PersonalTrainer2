@@ -20,7 +20,6 @@ namespace PersonalTrainerApi
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("https://localhost:5000/")
                 .Build();
     }
 }

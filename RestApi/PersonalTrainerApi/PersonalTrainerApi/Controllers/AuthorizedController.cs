@@ -9,7 +9,7 @@ namespace PersonalTrainerApi.Controllers
     [Authorization]
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class AuthorizedController : ControllerBase
+    public abstract class AuthorizedController : ControllerBase
     {
     }
 }

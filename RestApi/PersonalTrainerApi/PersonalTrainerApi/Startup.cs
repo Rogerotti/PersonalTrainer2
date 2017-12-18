@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Framework.Model;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Threading.Tasks;
 
 namespace PersonalTrainerApi
 {
@@ -28,47 +30,13 @@ namespace PersonalTrainerApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .AddMvcOptions(x => { x.Filters.Add(new RequireHttpsAttribute()); });
-
-            services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<DefaultContext>();
-            /*
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services
+                .AddMemoryCache()
+                .AddMvc(options =>
                 {
-                    options.Audience = "http://localhost:5001/";
-                    options.Authority = "http://localhost:5000/";
+                    options.Filters.Add(new RequireHttpsAttribute());
                 });
-            /*
-            services.AddIdentity<IdentityUser,IdentityRole>()
-             .AddEntityFrameworkStores<DefaultContext>()
-             .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = false;
-                options.Password.RequiredUniqueChars = 3;
-
-                // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-                options.Lockout.MaxFailedAccessAttempts = 10;
-                options.Lockout.AllowedForNewUsers = true;
-
-                // User settings
-                options.User.RequireUniqueEmail = true;
-            });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("User", p => p.RequireClaim("user"));
-            });
- */
             // Ustawienia podstawowych informacji na temat swaggera
             services.AddSwaggerGen(c =>
             {
@@ -78,7 +46,20 @@ namespace PersonalTrainerApi
             // Ustawienie serwisów
             services.AddSingleton<IUserManagement, UserManagement>();
             services.AddSingleton<IProductManagement, ProductManagement>();
-            
+
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.Domain = "Test";
+                    options.Events.OnRedirectToLogin = context =>
+                    {
+                        context.Response.Headers["Location"] = context.RedirectUri;
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    };
+                });
+
 
             // Ustawienie połączenia z bazą danych
             services.AddDbContext<DefaultContext>(
@@ -94,21 +75,13 @@ namespace PersonalTrainerApi
             }
 
             app.UseMvc();
-
-            app.UseAuthentication();
-
+            app.UseWebSockets();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("v1/swagger.json", "Personaltrainerppi");
             });
-            /*
-            app.Run(async (context) =>
-            {
-                string not = "Nie znaleziono adresu";
-                var byteArray = Encoding.UTF8.GetBytes(not);
-                await context.Response.Body.WriteAsync(byteArray, 0, byteArray.Length);
-            });'*/
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Framework.Resources;
 using Framework.ValidationAttributes;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,7 +12,7 @@ namespace Framework.Models.Dto
 
         [Required(ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.LoginRequired))]
-
+        [JsonProperty(nameof(Login))]
         [StringLength(20, 
         MinimumLength = 3, 
         ErrorMessageResourceType = typeof(ErrorLanguage),
@@ -26,7 +27,7 @@ namespace Framework.Models.Dto
 
         [Required(ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.PasswordRequired))]
-
+        [JsonProperty(nameof(Password))]
         [StringLength(20, MinimumLength = 5, 
         ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.PasswordLength))]
@@ -45,7 +46,7 @@ namespace Framework.Models.Dto
 
         [Required(ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.EmailEmpty))]
-
+        [JsonProperty(nameof(Email))]
         [EmailRegex(ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.EmailRegex))]
         /// <summary>
@@ -53,7 +54,7 @@ namespace Framework.Models.Dto
         /// </summary>
         public String Email { get; set; }
 
-
+        [JsonProperty(nameof(Gender))]
         /// <summary>
         /// Płeć
         /// Zgodnie z ISO/IEC 5218
@@ -64,6 +65,7 @@ namespace Framework.Models.Dto
         /// </summary>
         public Int32 Gender { get; set; }
 
+        [JsonProperty(nameof(Weight))]
         [Required(ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.WeightEmpty))]
         /// <summary>
@@ -71,9 +73,10 @@ namespace Framework.Models.Dto
         /// </summary>
         public Decimal Weight { get; set; }
 
+
         [Required(ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.HeightEmpty))]
-
+        [JsonProperty(nameof(Height))]
         ///  <summary>
         /// Wzrost w centymetrach.
         /// 1 cm = 0.328 ft
@@ -93,6 +96,7 @@ namespace Framework.Models.Dto
         [Range(8,99,
         ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.AgeRange))]
+        [JsonProperty(nameof(Age))]
         /// <summary>
         /// Wiek.
         /// </summary>

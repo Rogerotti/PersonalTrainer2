@@ -22,14 +22,10 @@ namespace PersonalTrainerApi.Model.Authorization
         /// <param name="context">Kontekst</param>
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (context.HttpContext.Request.Headers.Any(x => x.Key.Equals("secure-token")))
+            if (!context.HttpContext.Request.Headers.Any(x => x.Key.Equals("secure-token")))
             {
-                context.Result = new OkResult();
+                //context.Result = new UnauthorizedResult();
             }
-            else {
-                context.Result = new BadRequestResult();
-            }
-            
         }
     }
 }

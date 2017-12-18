@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PersonalTrainerApi.Model.Authorization;
 using PersonalTrainerApi.Model.Dto.Product;
 using PersonalTrainerApi.Services;
 using System;
@@ -6,9 +7,10 @@ using System.Linq;
 
 namespace PersonalTrainerApi.Controllers
 {
+    [Authorization]
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class ProductController : AuthorizedController
+    public class ProductController : ControllerBase
     {
         private readonly IProductManagement productManagement;
 
