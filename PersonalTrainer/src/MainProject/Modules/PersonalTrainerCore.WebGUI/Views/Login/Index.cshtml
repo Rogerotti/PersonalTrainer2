@@ -1,4 +1,9 @@
-﻿@model  Framework.Models.Dto.UserDto
+﻿@using System.Collections.Generic
+@using System.Linq
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+
+@model  Framework.Models.Dto.UserDto
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = @Framework.Resources.UserLanguage.Login;
@@ -39,8 +44,26 @@
             </div>
 
         </div>
+        <div>
+            <!--TODO-->
+        </div>
+        <div id="spinner"
+             style="
+            background: #4267b2;
+            border-radius: 5px;
+            color: white;
+            height: 40px;
+            text-align: center;
+            width: 250px;">
+            Loading
+            <div class="fb-login-button"
+                 data-max-rows="1"
+                 data-size="large"
+                 data-button-type="continue_with"></div>
+        </div>
     </form>
-
 </body>
+
+
 
 

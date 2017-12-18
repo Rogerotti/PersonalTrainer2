@@ -25,4 +25,10 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Framework">
+      <HintPath>..\..\..\Framework\Framework\Framework\bin\Debug\netstandard2.0\Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

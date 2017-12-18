@@ -14,20 +14,34 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace MainProject
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; }
+
         private readonly IHostingEnvironment hostingEnviroment;
 
         public Startup(IHostingEnvironment hostingEnviroment)
         {
             this.hostingEnviroment = hostingEnviroment;
+            var builder = new ConfigurationBuilder();
+
+            if (hostingEnviroment.IsDevelopment())
+            {
+                builder.AddUserSecrets<Startup>();
+            }
+                
+            Configuration = builder.Build();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             var connection = @"Server=(localdb)\MSSQLLocalDB;Database=PersonalTrainer;Trusted_Connection=True;";
             services.AddDbContext<DefaultContext>(
                 options => options.UseSqlServer(connection, b => b.MigrationsAssembly("MainProject"))
@@ -38,17 +52,28 @@ namespace MainProject
                 options.CookieName = ".PersonalTrainer";
             });
 
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<DefaultContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication().AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            });
+
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IUserManagement, UserManagement>();
             services.AddScoped<IProductManagement, ProductManagement>();
             services.AddScoped<IUserGoalsManagement, UserGoalsManagement>();
             // services.AddLocalization(options => options.ResourcesPath = "Resources");
-
             var mvcBuilder = services.AddMvc()
                 .AddJsonOptions(jsonOptions =>
                 {
                     jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-                });
+                    jsonOptions.SerializerSettings.DateFormatString = "yy-mm-dd";
+                }).AddMvcOptions(x => { x.Filters.Add(new RequireHttpsAttribute()); });
 
             IList<ModuleInfo> modules = GetModules(hostingEnviroment);
 
@@ -70,6 +95,7 @@ namespace MainProject
 
             app.UseStaticFiles();
             app.UseSession();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
