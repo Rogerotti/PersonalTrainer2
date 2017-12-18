@@ -1,4 +1,5 @@
 ﻿using Framework.Model;
+using PersonalTrainerApi.Model.Dto.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace PersonalTrainerApi.Services
         /// </summary>
         /// <param name="userName">Nazwa użytkownika.</param>
         /// <param name="password">Hasło użytkownika.</param>
-        String Login(String userName, String password);
+        SessionDto Login(String userName, String password);
 
         /// <summary>
         /// Wylogowywuje użytkownika.

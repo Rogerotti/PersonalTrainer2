@@ -49,12 +49,7 @@ namespace MainProject
 
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.CookieName = ".PersonalTrainer";
             });
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<DefaultContext>()
-                .AddDefaultTokenProviders();
 
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {

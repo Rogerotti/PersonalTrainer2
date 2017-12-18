@@ -1,5 +1,6 @@
 ﻿using Framework.Models.Dto;
 using Framework.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -12,10 +13,14 @@ namespace PersonalTrainerCore.Controllers
     public class TopMenuViewComponent : ViewComponent
     {
         private readonly IUserManagement userManagement;
+        private readonly ISession session;
 
-        public TopMenuViewComponent(IUserManagement userManagement)
+        public TopMenuViewComponent(
+            IUserManagement userManagement,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.userManagement = userManagement;
+            session = httpContextAccessor.HttpContext.Session;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(Boolean loggedIn, String username)
@@ -23,12 +28,15 @@ namespace PersonalTrainerCore.Controllers
             return await Task.Run(() =>
             {
                 var dto = new TopMenuDto();
-                if (userManagement.UserLogedIn())
+                var id = session.GetString("userId");
+        
+                if (id != null)
                 {
-                    var currentUser = userManagement.GetCurrentUser();
+                    var userName = session.GetString("username");
+                    var isAdmin = session.GetString("IsAdmin") == "True" ? true : false;
                     dto.IsLogedIn = true;
-                    dto.UserName = currentUser.Login;
-                    dto.IsAdmin = currentUser.IsAdministrator;
+                    dto.UserName = userName;
+                    dto.IsAdmin = isAdmin;
                 }
                 else
                 {

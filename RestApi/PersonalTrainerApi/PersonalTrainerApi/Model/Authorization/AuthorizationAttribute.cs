@@ -26,6 +26,10 @@ namespace PersonalTrainerApi.Model.Authorization
             {
                 //context.Result = new UnauthorizedResult();
             }
+            else
+            {
+                // context.HttpContext.Request.Co
+            }
         }
     }
 }

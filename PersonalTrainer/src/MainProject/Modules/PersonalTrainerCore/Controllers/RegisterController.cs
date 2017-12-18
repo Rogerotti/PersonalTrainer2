@@ -1,5 +1,5 @@
-﻿using Framework.Models.Dto;
-using Framework.Services;
+﻿using Framework.Models.ApiDto;
+using Framework.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,14 +12,10 @@ namespace PersonalTrainerCore.Controllers
 {
     public class RegisterController : Controller
     {
-        private readonly IUserManagement userManagement;
         private readonly ILogger<LoginController> logger;
 
-        public RegisterController(
-            IUserManagement userManagement,
-            ILogger<LoginController> logger)
+        public RegisterController(ILogger<LoginController> logger)
         {
-            this.userManagement = userManagement;
             this.logger = logger;
         }
 
@@ -31,23 +27,28 @@ namespace PersonalTrainerCore.Controllers
                 if (ModelState.IsValid)
                 {
                     HttpClient client = new HttpClient();
-                    client.DefaultRequestHeaders.Add("context", "application-json");
-                    client.DefaultRequestHeaders.Add("secure-token", "TODOD z sesji");
+                    var payload = new UserApiDto()
+                    {
+                        Username = user.Login,
+                        Password = user.Password,
+                        Weight = user.Weight,
+                        Height = user.Height,
+                        UserState = (Int32)user.UserState,
+                        Administrator = false,
+                        Age = user.Age,
+                        Email = user.Email,
+                        Gender = user.Gender,
+                    };
 
-                    client.BaseAddress = new Uri("https://localhost:44323/api/user/register");
-
-
- 
-                    // Serialize our concrete class into a JSON String
-                    var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(user));
-
-                    // Wrap our JSON inside a StringContent which then can be used by the HttpClient class
+                    var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(payload));
                     var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+                    var result = await client.PostAsync("https://localhost:44323/api/user/register", httpContent);
 
-                    var r = await client.PostAsync("https://localhost:44323/api/user/register", httpContent);
-
-                    userManagement.RegisterUser(user.Login, user.Email, user.Password, user.Gender, user.Height, user.Weight, user.Age);
-                    userManagement.Login(user.Login, user.Password);
+                    client = new HttpClient();
+                    var payload2 = new UserSimpleApiDto() { Username = user.Login, Password = user.Password };
+                    var stringPayload2 = await Task.Run(() => JsonConvert.SerializeObject(payload2));
+                    var httpContent2 = new StringContent(stringPayload2, Encoding.UTF8, "application/json");
+                    var result2 = await client.PostAsync("https://localhost:44323/api/user/login", httpContent);
                     return RedirectToAction("Index", "Home");
                 }
                 else

@@ -1,6 +1,7 @@
 ﻿using Framework.Model;
 using PersonalTrainerApi.Model.Database.Context;
 using PersonalTrainerApi.Model.Database.Entity;
+using PersonalTrainerApi.Model.Dto.Authorization;
 using PersonalTrainerApi.Resources;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,16 @@ namespace PersonalTrainerApi.Services
     public class UserManagement : IUserManagement
     {
         private readonly DefaultContext context;
-
+        private readonly IAuthorizationManagement authorizationManagement;
         private const String userId = nameof(userId);
         private const String userName = nameof(userName);
 
-        public UserManagement(DefaultContext context)
+        public UserManagement(
+            DefaultContext context, 
+            IAuthorizationManagement authorizationManagement)
         {
             this.context = context;
+            this.authorizationManagement = authorizationManagement;
         }
 
         /// <summary>
@@ -78,19 +82,13 @@ namespace PersonalTrainerApi.Services
             }
         }
 
-        public String Login(String username, String password)
+        public SessionDto Login(String username, String password)
         {
             var userList = context.User.ToList();
             if (!userList.Any()) throw new UnauthorizedAccessException(Errors.ServerError);
 
             var user = userList.FirstOrDefault(x => x.UserName.ToLower().Equals(username.ToLower()));
 
-            if (user == null)
-            {
-                user = userList.FirstOrDefault(x => x.Email.ToLower().Equals(username.ToLower()));
-
-                if (user == null) throw new UnauthorizedAccessException(Errors.BadUsernameOrPassword);
-            }
             if (user.UserState == 2) throw new UnauthorizedAccessException(Errors.AccountDeleted);
 
             byte[] salt = Convert.FromBase64String(user.Salt);
@@ -101,7 +99,14 @@ namespace PersonalTrainerApi.Services
             var hasCode = Convert.FromBase64String(user.HashCode);
             if (hasCode.SequenceEqual(saltedHash))
             {
-                return null; // TODO zwracanie tokena
+                var token = authorizationManagement.GenerateToken(user.UserName);
+                return new SessionDto()
+                {
+                    Token = token,
+                    UserId = user.UserId,
+                    Admin = user.Administrator,
+                    Username = user.UserName,
+                };
             }
             else
                 throw new UnauthorizedAccessException(Errors.BadUsernameOrPassword);

@@ -2,19 +2,14 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using PersonalTrainerApi.Model.Database.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using System;
 using PersonalTrainerApi.Services;
 using Swashbuckle.AspNetCore.Swagger;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using Framework.Model;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Net;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using System.IO;
 
 namespace PersonalTrainerApi
 {
@@ -22,20 +17,48 @@ namespace PersonalTrainerApi
     {
 
         public IConfiguration Configuration { get; }
+        private readonly IHostingEnvironment hostingEnvironment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment hostingEnvironment)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json");
+
+            Configuration = builder.Build();
+            this.hostingEnvironment = hostingEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             services
-                .AddMemoryCache()
-                .AddMvc(options =>
+                .AddMemoryCache();
+           
+            if (hostingEnvironment.IsDevelopment())
+            {
+                services.AddMvc(opts =>
                 {
-                    options.Filters.Add(new RequireHttpsAttribute());
+                    opts.Filters.Add(new AllowAnonymousFilter());
                 });
+            }
+            else
+            {
+                services.AddMvc();
+            }
+
+            #region Kestrel
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Listen(IPAddress.Any, 5000);
+                if (hostingEnvironment.IsDevelopment())
+                {
+                    options.Listen(IPAddress.Any, 5002);
+                }
+                // Usunięcie nagłówka "Server:Kestrel" z odpowiedzi HTTP.
+                options.AddServerHeader = false;
+            });
+            #endregion Kestrel
 
             // Ustawienia podstawowych informacji na temat swaggera
             services.AddSwaggerGen(c =>
@@ -46,20 +69,8 @@ namespace PersonalTrainerApi
             // Ustawienie serwisów
             services.AddSingleton<IUserManagement, UserManagement>();
             services.AddSingleton<IProductManagement, ProductManagement>();
-
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.Cookie.Domain = "Test";
-                    options.Events.OnRedirectToLogin = context =>
-                    {
-                        context.Response.Headers["Location"] = context.RedirectUri;
-                        context.Response.StatusCode = 401;
-                        return Task.CompletedTask;
-                    };
-                });
-
+            services.AddSingleton<IAuthorizationManagement, AuthorizationManagement>();
+            
 
             // Ustawienie połączenia z bazą danych
             services.AddDbContext<DefaultContext>(
@@ -75,7 +86,6 @@ namespace PersonalTrainerApi
             }
 
             app.UseMvc();
-            app.UseWebSockets();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
