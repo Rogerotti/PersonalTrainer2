@@ -99,7 +99,7 @@ namespace PersonalTrainerApi.Services
             var hasCode = Convert.FromBase64String(user.HashCode);
             if (hasCode.SequenceEqual(saltedHash))
             {
-                var token = authorizationManagement.GenerateToken(user.UserName);
+                var token = authorizationManagement.GenerateToken(user.Administrator);
                 return new SessionDto()
                 {
                     Token = token,

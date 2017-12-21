@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PersonalTrainerApi.Model.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonalTrainerApi.Model.Dto.Product;
 using PersonalTrainerApi.Services;
 using System;
@@ -7,10 +7,7 @@ using System.Linq;
 
 namespace PersonalTrainerApi.Controllers
 {
-    [Authorization]
-    [Produces("application/json")]
-    [Route("api/[controller]")]
-    public class ProductController : ControllerBase
+    public class ProductController : AuthorizedController
     {
         private readonly IProductManagement productManagement;
 
@@ -134,6 +131,7 @@ namespace PersonalTrainerApi.Controllers
             }
         }
 
+        [Authorize("admin")]
         /// <summary>
         /// Potwierdza subskrypcję produktu.
         /// </summary>
@@ -153,6 +151,7 @@ namespace PersonalTrainerApi.Controllers
             }
         }
 
+        [Authorize("admin")]
         /// <summary>
         /// Odrzuca subskrypcję
         /// </summary>

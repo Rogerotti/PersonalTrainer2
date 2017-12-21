@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Net;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using PersonalTrainerApi.Model.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PersonalTrainerApi
 {
@@ -39,7 +42,7 @@ namespace PersonalTrainerApi
             {
                 services.AddMvc(opts =>
                 {
-                    opts.Filters.Add(new AllowAnonymousFilter());
+                    // opts.Filters.Add(new AllowAnonymousFilter());
                 });
             }
             else
@@ -70,7 +73,25 @@ namespace PersonalTrainerApi
             services.AddSingleton<IUserManagement, UserManagement>();
             services.AddSingleton<IProductManagement, ProductManagement>();
             services.AddSingleton<IAuthorizationManagement, AuthorizationManagement>();
-            
+            string domain = "https://personal-trainer.com/";
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = domain;
+                options.Audience = "https://personal-trainer";
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("user", policy => policy.Requirements.Add(new HasScopeRequirement("user", domain)));
+                options.AddPolicy("admin", policy => policy.Requirements.Add(new HasScopeRequirement("admin", domain)));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             // Ustawienie połączenia z bazą danych
             services.AddDbContext<DefaultContext>(
@@ -86,6 +107,8 @@ namespace PersonalTrainerApi
             }
 
             app.UseMvc();
+
+            app.UseAuthentication();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

@@ -1,41 +1,53 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using System.Text;
 
 namespace PersonalTrainerApi.Services
 {
     public class AuthorizationManagement : IAuthorizationManagement
     {
-        public string GenerateToken(string username)
+        public string GenerateToken(bool isAdmin = false)
         {
-                var now = DateTime.UtcNow;
+            // Define const Key this should be private secret key stored in some safe place
+            string key = "401b09eab3c013d4ca54922bb802bec8fd5318165da43fd1d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
 
-                // Specifically add the jti (random nonce), iat (issued timestamp), and sub (subject/user) claims.
-                // You can add other claims here, if you want:
-                var dateTimeOffset = new DateTimeOffset(now);
-                var unixDateTime = dateTimeOffset.ToUnixTimeSeconds();
+            // Create Security key  using private key above:
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
-                var claims = new Claim[]
-                {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, unixDateTime.ToString(), ClaimValueTypes.Integer64)
-                };
+            // Also note that securityKey length should be >256b
+            // so you have to make sure that your private key has a proper length
+            var credentials = new SigningCredentials
+                              (securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-                // Create the JWT and write it to a string
-                var jwt = new JwtSecurityToken(
-                    claims: claims,
-                    notBefore: now,
-                    expires: now.Add(TimeSpan.FromMinutes(30))
-                    );
-                return new JwtSecurityTokenHandler().WriteToken(jwt);
-        }
+            //  Finally create a Token
+            var header = new JwtHeader(credentials);
+            //Some PayLoad that contain information about the  customer
+            JwtPayload payload;
+            if (isAdmin)
+            {
+                payload = new JwtPayload
+                   {
+                       {"userType:user", "user"},
+                       {"userType:admin", "admin" },
+                       {"expireDate", DateTime.Now.AddMinutes(30).ToString() },
+                       {"scope", "https://personal-trainer.com/"},
+                   };
+            }
+            else
+            {
+                payload = new JwtPayload
+                   {
+                       {"userType:user", "user"},
+                       {"expireDate", DateTime.Now.AddMinutes(30).ToString() },
+                       {"scope", "https://personal-trainer.com/"},
+                   };
+            }
 
-        public bool TokenValid(string token)
-        {
-            var result = new JwtSecurityTokenHandler().ReadToken(token);
-            return result.ValidTo < DateTime.Now;
-
+            var secToken = new JwtSecurityToken(header, payload);
+            var handler = new JwtSecurityTokenHandler();
+            var tokenString = handler.WriteToken(secToken);
+            return tokenString;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PersonalTrainerApi.Model.Authorization;
 using PersonalTrainerApi.Model.Dto.Authorization;
 using PersonalTrainerApi.Model.Dto.User;
 using PersonalTrainerApi.Services;
@@ -10,7 +9,6 @@ namespace PersonalTrainerApi.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-
     public class UserController : ControllerBase
     {
         private readonly IUserManagement userManagement;
@@ -52,7 +50,7 @@ namespace PersonalTrainerApi.Controllers
         /// <param name="user"><see cref="SimpleUserDto"/></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [ProducesResponseType(typeof(SessionDto),200)]
+        [ProducesResponseType(typeof(SessionDto), 200)]
         [HttpPost(nameof(Login))]
         public IActionResult Login([FromBody] SimpleUserDto user)
         {
@@ -68,11 +66,45 @@ namespace PersonalTrainerApi.Controllers
         }
 
         /// <summary>
+        /// Generuje token do testów
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(String), 200)]
+        [HttpPost(nameof(LoginAdminSample))]
+        public IActionResult LoginAdminSample()
+        {
+            try
+            {
+                return Ok(authorizationManagement.GenerateToken(true));
+            }
+            catch (Exception exc)
+            {
+                return BadRequest(exc);
+            }
+        }
+
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(String), 200)]
+        [HttpPost(nameof(LoginSample))]
+        public IActionResult LoginSample()
+        {
+            try
+            {
+                return Ok(authorizationManagement.GenerateToken());
+            }
+            catch (Exception exc)
+            {
+                return BadRequest(exc);
+            }
+        }
+
+        /// <summary>
         /// Usuwa użytkownika
         /// </summary>
         /// <param name="userId">Identyfikator użytkownika</param>
         /// <returns></returns>
-        [Authorization]
+        [Authorize("admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {

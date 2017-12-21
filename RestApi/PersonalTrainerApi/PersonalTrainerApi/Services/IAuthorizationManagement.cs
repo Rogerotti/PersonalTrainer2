@@ -7,9 +7,7 @@ namespace PersonalTrainerApi.Services
         /// <summary>
         /// Generuje token
         /// </summary>
-        /// <param name="username">Nazwa użytkownika</param>
-        string GenerateToken(string username);
-
-        Boolean TokenValid(string token);
+        /// <param name="isAdmin">Czy jest administratorem</param>
+        string GenerateToken(bool isAdmin = false);
     }
 }
