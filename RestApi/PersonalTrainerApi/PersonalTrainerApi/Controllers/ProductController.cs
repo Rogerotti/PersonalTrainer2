@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalTrainerApi.Model.Dto.Product;
-using PersonalTrainerApi.Services;
+using PersonalTrainerApi.Services.Products;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PersonalTrainerApi.Controllers
@@ -15,6 +16,24 @@ namespace PersonalTrainerApi.Controllers
         {
             this.productManagement = productManagement;
         }
+        /// <summary>
+        /// Zwraca wszystkie produkty produkty
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Products")]
+        [ProducesResponseType(typeof(IEnumerable<ProductDto>), 200)]
+        public IActionResult Products()
+        {
+            try
+            {
+                var products = productManagement.GetProducts();
+                return Ok(products);
+            }
+            catch (Exception exc)
+            {
+                return new BadRequestObjectResult(exc);
+            }
+        }
 
         /// <summary>
         /// Zwraca produkt o podanym identyfikatorze
@@ -22,6 +41,7 @@ namespace PersonalTrainerApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ProductDto), 200)]
         public IActionResult Get(Guid id)
         {
             try
@@ -35,13 +55,29 @@ namespace PersonalTrainerApi.Controllers
             }
         }
 
+        [HttpPost()]
+        [ProducesResponseType(typeof(Guid), 200)]
+        public IActionResult Post([FromBody] ProductDto dto)
+        {
+            try
+            {
+                var id = productManagement.AddProduct(dto);
+                return Ok(id);
+            }
+            catch (Exception exc)
+            {
+                return new BadRequestObjectResult(exc);
+            }
+        }
+
         /// <summary>
         /// Modyfikuje produkt
         /// </summary>
         /// <param name="id">Identyfikator produktu</param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult Put([FromBody] ProductDto product)
+        [ProducesResponseType(200)]
+        public IActionResult Put(Guid id, [FromBody] ProductDto product)
         {
             try
             {
@@ -60,6 +96,7 @@ namespace PersonalTrainerApi.Controllers
         /// <param name="id">Identyfikator produktu</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
         public IActionResult Delete(Guid id)
         {
             try
@@ -86,25 +123,6 @@ namespace PersonalTrainerApi.Controllers
             {
                 var products = productManagement.GetUserProducts(userId);
                 return Ok(products.ToArray());
-            }
-            catch (Exception exc)
-            {
-                return new BadRequestObjectResult(exc);
-            }
-        }
-
-
-        /// <summary>
-        /// Zwraca wszystkie produkty produkty
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("Products")]
-        public IActionResult Products()
-        {
-            try
-            {
-                var products = productManagement.GetProducts();
-                return Ok(products);
             }
             catch (Exception exc)
             {

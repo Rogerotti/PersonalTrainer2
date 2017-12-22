@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PersonalTrainerApi.Services
+namespace PersonalTrainerApi.Services.Authorization
 {
     public interface IAuthorizationManagement
     {

@@ -7,11 +7,11 @@
 }
 
 <style>
-
    td.h2 {
-color: red;
-}
-        pad-right {
+        color: red;
+    }
+
+    pad-right {
         padding-right: 2em;
     }
 
@@ -27,15 +27,14 @@ color: red;
         margin-top: 2em;
     }
 
-        .margin-bottom {
+    .margin-bottom {
         margin-bottom: 2em;
     }
-          .margin-bottom2{
+    .margin-bottom2{
         margin-bottom: 1em;
     }
-
-          #testoi {
-     clear: right;
+    #testoi {
+        clear: right;
     }
 </style>
 
@@ -315,14 +314,12 @@ color: red;
 {
 <script>
 
-    $(document).ready(function () {
+    $(document).ready(() => {
         $('.sortable.table').tablesort();
-
         $('.tabular.menu .item').tab();
     });
 
-    $('#pendingProductsSearch').on('keyup', function (e)
-    {
+    $('#pendingProductsSearch').on('keyup', (e) => {
         if ('' != this.value) {
             var reg = new RegExp(this.value, 'i'); // case-insesitive
 
@@ -340,7 +337,7 @@ color: red;
     });
 
     function showDetails(b) {
-        var rows = $('#table > tbody > tr')
+        var rows = $('#table > tbody > tr');
         for (var i = 0; i < rows.length; i++)
             rows.eq(i).attr('class', ' ');
 
@@ -355,90 +352,90 @@ color: red;
             data: JSON.stringify(data),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            success: function (productDto)
-            {
+            success: (productDto) => {
                 ManagePendingDetails(productDto);
                 ManageSubscribedDetails(productDto);
                 ManageRejectedDetails(productDto);
 
                 $('input[name="productId"]').val(guidId);
             },
-            error: function (xhr, ajaxOptions, thrownError) {
+            error: (xhr, ajaxOptions, thrownError) => {
                 alert(xhr.status);
                 alert(thrownError);
-            }
-        });
+            },
+        })
+    };
 
-        function ManagePendingDetails(productDto){
-            if (productDto.state == 1) {
-                $('#pendingDetailsName').text(productDto.name);
-                $('#pendingDetailsManufacturer').text(productDto.manufacturer);
-                $('#pendingDetailsCalories').text(productDto.macro.calories);
-                $('#pendingDetailsProtein').text(productDto.macro.protein);
-                $('#pendingDetailsFat').text(productDto.macro.fat);
-                $('#pendingDetailsCarbs').text(productDto.macro.carbohydrates);
-                $('#pendingDetailsType').text(productDto.typeDisplayName);
-                $('#pendingAcceptButton').removeAttr('disabled');
-                $('#pendingDeclineButton').removeAttr('disabled');
-            }
-            else {
-                $('#pendingDetailsName').text('');
-                $('#pendingDetailsManufacturer').text('');
-                $('#pendingDetailsCalories').text('');
-                $('#pendingDetailsProtein').text('');
-                $('#pendingDetailsFat').text('');
-                $('#pendingDetailsCarbs').text('');
-                $('#pendingDetailsType').text('');
-                $('#pendingAcceptButton').attr('disabled', '');
-                $('#pendingDeclineButton').attr('disabled', '');
-            }
+    const ManagePendingDetails = (productDto) => {
+        if (productDto.state == 1) {
+            $('#pendingDetailsName').text(productDto.name);
+            $('#pendingDetailsManufacturer').text(productDto.manufacturer);
+            $('#pendingDetailsCalories').text(productDto.macro.calories);
+            $('#pendingDetailsProtein').text(productDto.macro.protein);
+            $('#pendingDetailsFat').text(productDto.macro.fat);
+            $('#pendingDetailsCarbs').text(productDto.macro.carbohydrates);
+            $('#pendingDetailsType').text(productDto.typeDisplayName);
+            $('#pendingAcceptButton').removeAttr('disabled');
+            $('#pendingDeclineButton').removeAttr('disabled');
         }
+        else {
+            $('#pendingDetailsName').text('');
+            $('#pendingDetailsManufacturer').text('');
+            $('#pendingDetailsCalories').text('');
+            $('#pendingDetailsProtein').text('');
+            $('#pendingDetailsFat').text('');
+            $('#pendingDetailsCarbs').text('');
+            $('#pendingDetailsType').text('');
+            $('#pendingAcceptButton').attr('disabled', '');
+            $('#pendingDeclineButton').attr('disabled', '');
+        }
+    };
 
-        function ManageSubscribedDetails(productDto) {
-            if (productDto.state == 3) {
-                $('#acceptedDetailsName').text(productDto.name);
-                $('#acceptedDetailsManufacturer').text(productDto.manufacturer);
-                $('#acceptedDetailsCalories').text(productDto.macro.calories);
-                $('#acceptedDetailsProtein').text(productDto.macro.protein);
-                $('#acceptedDetailsFat').text(productDto.macro.fat);
-                $('#acceptedDetailsCarbs').text(productDto.macro.carbohydrates);
-                $('#acceptedDetailsType').text(productDto.typeDisplayName);
-                $('#acceptedDeclineButton').removeAttr('disabled');
-            }
-            else {
-                $('#acceptedDetailsName').text('');
-                $('#acceptedDetailsManufacturer').text('');
-                $('#acceptedDetailsCalories').text('');
-                $('#acceptedDetailsProtein').text('');
-                $('#acceptedDetailsFat').text('');
-                $('#acceptedDetailsCarbs').text('');
-                $('#acceptedDetailsType').text('');
-                $('#acceptedDeclineButton').attr('disabled', '');
-            }
+    const ManageSubscribedDetails = (productDto) => {
+        if (productDto.state == 3) {
+            $('#acceptedDetailsName').text(productDto.name);
+            $('#acceptedDetailsManufacturer').text(productDto.manufacturer);
+            $('#acceptedDetailsCalories').text(productDto.macro.calories);
+            $('#acceptedDetailsProtein').text(productDto.macro.protein);
+            $('#acceptedDetailsFat').text(productDto.macro.fat);
+            $('#acceptedDetailsCarbs').text(productDto.macro.carbohydrates);
+            $('#acceptedDetailsType').text(productDto.typeDisplayName);
+            $('#acceptedDeclineButton').removeAttr('disabled');
         }
+        else {
+            $('#acceptedDetailsName').text('');
+            $('#acceptedDetailsManufacturer').text('');
+            $('#acceptedDetailsCalories').text('');
+            $('#acceptedDetailsProtein').text('');
+            $('#acceptedDetailsFat').text('');
+            $('#acceptedDetailsCarbs').text('');
+            $('#acceptedDetailsType').text('');
+            $('#acceptedDeclineButton').attr('disabled', '');
+        }
+    };
 
-        function ManageRejectedDetails(productDto) {
-            if (productDto.state == 2) {
-                $('#rejectedDetailsName').text(productDto.name);
-                $('#rejectedDetailsManufacturer').text(productDto.manufacturer);
-                $('#rejectedDetailsCalories').text(productDto.macro.calories);
-                $('#rejectedDetailsProtein').text(productDto.macro.protein);
-                $('#rejectedDetailsFat').text(productDto.macro.fat);
-                $('#rejectedDetailsCarbs').text(productDto.macro.carbohydrates);
-                $('#rejectedDetailsType').text(productDto.typeDisplayName);
-                $('#rejectedAcceptButton').removeAttr('disabled');
-            }
-            else {
-                $('#rejectedDetailsName').text('');
-                $('#rejectedDetailsManufacturer').text('');
-                $('#rejectedDetailsCalories').text('');
-                $('#rejectedDetailsProtein').text('');
-                $('#rejectedDetailsFat').text('');
-                $('#rejectedDetailsCarbs').text('');
-                $('#rejectedDetailsType').text('');
-                $('#rejectedAcceptButton').attr('disabled', '');
-            }
+    const ManageRejectedDetails = (productDto) => {
+        if (productDto.state == 2) {
+            $('#rejectedDetailsName').text(productDto.name);
+            $('#rejectedDetailsManufacturer').text(productDto.manufacturer);
+            $('#rejectedDetailsCalories').text(productDto.macro.calories);
+            $('#rejectedDetailsProtein').text(productDto.macro.protein);
+            $('#rejectedDetailsFat').text(productDto.macro.fat);
+            $('#rejectedDetailsCarbs').text(productDto.macro.carbohydrates);
+            $('#rejectedDetailsType').text(productDto.typeDisplayName);
+            $('#rejectedAcceptButton').removeAttr('disabled');
         }
-    }
+        else {
+            $('#rejectedDetailsName').text('');
+            $('#rejectedDetailsManufacturer').text('');
+            $('#rejectedDetailsCalories').text('');
+            $('#rejectedDetailsProtein').text('');
+            $('#rejectedDetailsFat').text('');
+            $('#rejectedDetailsCarbs').text('');
+            $('#rejectedDetailsType').text('');
+            $('#rejectedAcceptButton').attr('disabled', '');
+        }
+    };
+
 </script>
 }

@@ -3,18 +3,25 @@ using Framework.Models;
 using Framework.Models.Dto;
 using Framework.Models.View;
 using Framework.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PersonalTrainerCore.Api;
+using PersonalTrainerCore.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PersonalTrainerDiet.Controllers
 {
     public class DietController : Controller
     {
         private readonly IProductManagement productManagement;
-        private readonly IUserGoalsManagement userGoalsManamgenet;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         private const String additionalMealsId = nameof(additionalMealsId);
         private const String productGuidId = nameof(productGuidId);
@@ -22,11 +29,12 @@ namespace PersonalTrainerDiet.Controllers
         private const String productMealTypeId = nameof(productMealTypeId);
         private const String mealTypeId = nameof(mealTypeId);
 
-        public DietController(IProductManagement productManagement,
-            IUserGoalsManagement userGoalsManamgenet)
+        public DietController(
+            IProductManagement productManagement,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.productManagement = productManagement;
-            this.userGoalsManamgenet = userGoalsManamgenet;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public IActionResult Index()
@@ -35,7 +43,7 @@ namespace PersonalTrainerDiet.Controllers
         }
 
         [HttpGet]
-        public IActionResult Day(String Id)
+        public async Task<IActionResult> Day(String Id)
         {
             DailyFoodDto ProductDto = null;
             DateTime dayDate;
@@ -77,24 +85,30 @@ namespace PersonalTrainerDiet.Controllers
             if (ProductDto == null)
                 ProductDto = productManagement.GetDailyFood(dayDate);
 
-
-            var userGoals = userGoalsManamgenet.GetCurrentUserGoals();
-
-            var dayView = new DayView()
+            var client = new HttpClient();
+            var url = ApiUrls.UserGoalsUrl.Replace("#ID#", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.UserId));
+            var result = await client.GetAsync(url);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                DayProteins = ProductDto.DayProteins,
-                DayFat = ProductDto.DayFat,
-                DailyProduct = ProductDto.DailyProduct,
-                DayCarbohydrates = ProductDto.DayCarbohydrates,
-                Day = ProductDto.Day,
-                DayCalories = ProductDto.DayCalories,
-                AvaibleCalories = userGoals.Calories,
-                AvaibleCarbohydrates = userGoals.Carbohydrates,
-                AvaibleFat = userGoals.Fat,
-                AvaibleProteins = userGoals.Proteins,
-            };
+                UserGoalsDto userGoals = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync(), typeof(UserGoalsDto)) as UserGoalsDto;
+                var dayView = new DayView()
+                {
+                    DayProteins = ProductDto.DayProteins,
+                    DayFat = ProductDto.DayFat,
+                    DailyProduct = ProductDto.DailyProduct,
+                    DayCarbohydrates = ProductDto.DayCarbohydrates,
+                    Day = ProductDto.Day,
+                    DayCalories = ProductDto.DayCalories,
+                    AvaibleCalories = userGoals.Calories,
+                    AvaibleCarbohydrates = userGoals.Carbohydrates,
+                    AvaibleFat = userGoals.Fat,
+                    AvaibleProteins = userGoals.Proteins,
+                };
 
-            return View(dayView);
+                return View(dayView);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -252,11 +266,11 @@ namespace PersonalTrainerDiet.Controllers
         /// <param name="dto">Dto produktu z widoku. <see cref="AddEditProductView"/></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult AddEditProduct(AddEditProductView dto)
+        public async Task<IActionResult> AddEditProduct(AddEditProductView dto)
         {
             try
             {
-                var product = new ProductDto()
+                var payload = new ProductDto()
                 {
                     Macro = dto.Macro,
                     Name = dto.Name,
@@ -266,13 +280,37 @@ namespace PersonalTrainerDiet.Controllers
                 };
 
                 if (dto.Mode == Mode.Add)
-                    productManagement.AddProduct(product);
+                {
+                    var client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+                    payload.UserId = new Guid(httpContextAccessor.HttpContext.Session.GetString(SessionTypes.UserId));
+                    var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(payload));
+                    var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+
+                    var result = await client.PostAsync(ApiUrls.AddProductUrl, httpContent);
+                    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        ModelState.AddModelError("AdditionalValidation", await result.RequestMessage.Content.ReadAsStringAsync());
+                        return View(dto);
+                    }
+                }
                 else if (dto.Mode == Mode.Edit)
                 {
-                    product.ProductId = dto.ProductId;
-                    productManagement.UpdateProduct(product);
-                }
+                    var client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
 
+                    payload.ProductId = dto.ProductId;
+                    var url = ApiUrls.EditProductUrl.Replace("#ID#", dto.ProductId.ToString());
+                    var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(payload));
+                    var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+
+                    var result = await client.PutAsync(url, httpContent);
+                    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        ModelState.AddModelError("AdditionalValidation", await result.RequestMessage.Content.ReadAsStringAsync());
+                        return View(dto);
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -289,58 +327,99 @@ namespace PersonalTrainerDiet.Controllers
         /// <param name="productDeleteId">Id produktu.</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult DeleteProduct(String productDeleteId)
+        public async Task<IActionResult> DeleteProduct(String productDeleteId)
         {
-            productManagement.RemoveProduct(new Guid(productDeleteId));
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+
+            var url = ApiUrls.DeleteProduct.Replace("#ID#", productDeleteId);
+            var result = await client.DeleteAsync(url);
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                ModelState.AddModelError("AdditionalValidation", await result.Content.ReadAsStringAsync());
+                return View();
+            }
             return RedirectToAction("ProductList", "Diet");
         }
 
         [HttpPost]
-        public IActionResult SubscribeProduct(String productSubscribeId)
+        public async Task<IActionResult> SubscribeProduct(String productSubscribeId)
         {
-            productManagement.SubscribeProduct(new Guid(productSubscribeId));
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+
+            var url = ApiUrls.SubscribeProduct.Replace("#ID#", productSubscribeId);
+            var result = await client.PostAsync(url, new StringContent(""));
+
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                ModelState.AddModelError("AdditionalValidation", await result.Content.ReadAsStringAsync());
+                return View();
+            }
+
             return RedirectToAction("ProductList", "Diet");
         }
 
         [HttpPost]
-        public IActionResult CancelSubscription(String productCancelSubscribeId)
+        public async Task<IActionResult> CancelSubscription(String productCancelSubscribeId)
         {
-            productManagement.CancelSubscription(new Guid(productCancelSubscribeId));
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+
+            var url = ApiUrls.DeclineSubscriptionProduct.Replace("#ID#", productCancelSubscribeId);
+            var result = await client.PostAsync(url, new StringContent(""));
+
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                ModelState.AddModelError("AdditionalValidation", await result.Content.ReadAsStringAsync());
+                return View();
+            }
+
             return RedirectToAction("ProductList", "Diet");
         }
 
         [HttpGet]
-        public IActionResult UserGoals()
+        public async Task<IActionResult> UserGoals()
         {
-            var goals = userGoalsManamgenet.GetCurrentUserGoals();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
 
-
-            if (goals.Calories == 0)
-                goals.Calories = 1;
-
-            var view = new UserGoalsView()
+            var url = ApiUrls.UserGoalsUrl.Replace("#ID#", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.UserId));
+            var result = await client.GetAsync(url);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                Calories = goals.Calories,
-                Carbohydrates = goals.Carbohydrates,
-                Fat = goals.Fat,
-                Proteins = goals.Proteins,
-                UserId = goals.UserId,
-                PercentageCarbs = goals.PercentageCarbs,
-                PercentageFat = goals.PercentageFat,
-                PercentageProtein = goals.PercentageProtein
-            };
+                UserGoalsDto goals = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync(), typeof(UserGoalsDto)) as UserGoalsDto;
+                if (goals.Calories == 0)
+                    goals.Calories = 1;
 
-            return View(view);
+                var view = new UserGoalsView()
+                {
+                    Calories = goals.Calories,
+                    Carbohydrates = goals.Carbohydrates,
+                    Fat = goals.Fat,
+                    Proteins = goals.Proteins,
+                    UserId = goals.UserId,
+                    PercentageCarbs = goals.PercentageCarbs,
+                    PercentageFat = goals.PercentageFat,
+                    PercentageProtein = goals.PercentageProtein
+                };
+
+                return View(view);
+            }
+            else {
+                ModelState.AddModelError("AdditionalValidation", await result.RequestMessage.Content.ReadAsStringAsync());
+                return View();
+            }
         }
 
         [HttpPost]
-        public IActionResult UserGoals(UserGoalsView dto)
+        public async Task<IActionResult> UserGoals(UserGoalsView dto)
         {
             if (dto != null)
             {
                 try
                 {
-                    var userGoals = new UserGoalsDto()
+                    var payload = new UserGoalsDto()
                     {
                         UserId = dto.UserId,
                         Calories = dto.Calories,
@@ -352,7 +431,19 @@ namespace PersonalTrainerDiet.Controllers
                         PercentageProtein = dto.PercentageProtein
                     };
 
-                    userGoalsManamgenet.SetGoals(userGoals);
+                    var client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+
+                    var url = ApiUrls.UserGoalsUrl.Replace("#ID#", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.UserId));
+                    var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(payload));
+                    var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+
+                    var result = await client.PostAsync(url, httpContent);
+                    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        ModelState.AddModelError("AdditionalValidation", await result.RequestMessage.Content.ReadAsStringAsync());
+                        return View();
+                    }
                 }
                 catch (Exception exc)
                 {
@@ -368,14 +459,28 @@ namespace PersonalTrainerDiet.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult ProductList()
+        public async Task<IActionResult> ProductList()
         {
-            var products = productManagement.GetUserProducts();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+
+            var url = ApiUrls.GetProductsUrl;
+            var result = await client.GetAsync(url);
+
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                ModelState.AddModelError("AdditionalValidation", await result.RequestMessage.Content.ReadAsStringAsync());
+                return View();
+            }
+
+            IEnumerable<ProductDto> products = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync(), typeof(IEnumerable<ProductDto>)) as IEnumerable<ProductDto>;
+
             var dto = new ProductListDto()
             {
                 ProductList = products,
                 SelectedProduct = null
             };
+
             return View(dto);
         }
 
@@ -385,11 +490,23 @@ namespace PersonalTrainerDiet.Controllers
         /// <param name="jsonBody"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult GetProductDetails([FromBody]JToken jsonBody)
+        public async Task<JsonResult> GetProductDetails([FromBody]JToken jsonBody)
         {
             var id = jsonBody.Value<String>("Id");
-            var productDetails = productManagement.GetProduct(new Guid(id));
-            return new JsonResult(productDetails);
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+
+            var url = ApiUrls.GetProductUrl.Replace("#ID#", id);
+            var result = await client.GetAsync(url);
+
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                ProductDto res = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync(), typeof(ProductDto)) as ProductDto;
+                return new JsonResult(res);
+            }
+
+            return new JsonResult(new ProductDto());
         }
+
     }
 }

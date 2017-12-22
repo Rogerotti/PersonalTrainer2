@@ -222,25 +222,23 @@ color: red;
             contentType: "application/json; charset=utf-8",
             success: function (userDto) {
                 if (userDto.isAdministrator) {
-                    $('#adminUserName').text(userDto.login);
-                    $('#adminUserEmail').text(userDto.email);
-                    $('#adminUserAge').text(userDto.age);
+                    $('#adminUserName').text(userDto.Login);
+                    $('#adminUserEmail').text(userDto.Email);
+                    $('#adminUserAge').text(userDto.Age);
                     $('#deleteUserButton').attr('disabled', '');
                     $('#degradateButton').removeAttr('disabled');
                     $('#promoteButton').attr('disabled', '');
                 }
                 else {
-                    $('#userName').text(userDto.login);
-                    $('#userEmail').text(userDto.email);
-                    $('#userAge').text(userDto.age);
+                    $('#userName').text(userDto.Login);
+                    $('#userEmail').text(userDto.Email);
+                    $('#userAge').text(userDto.Age);
                     $('#deleteUserButton').removeAttr('disabled');
                     $('#degradateButton').attr('disabled', '');
                     $('#promoteButton').removeAttr('disabled');
                 }
 
                 $('input[name="userId"]').val(guidId);
-            
-                
             },
 
             error: function (xhr, ajaxOptions, thrownError) {

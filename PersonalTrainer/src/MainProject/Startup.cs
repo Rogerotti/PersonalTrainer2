@@ -61,8 +61,8 @@ namespace MainProject
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IUserManagement, UserManagement>();
             services.AddScoped<IProductManagement, ProductManagement>();
-            services.AddScoped<IUserGoalsManagement, UserGoalsManagement>();
             // services.AddLocalization(options => options.ResourcesPath = "Resources");
+
             var mvcBuilder = services.AddMvc()
                 .AddJsonOptions(jsonOptions =>
                 {

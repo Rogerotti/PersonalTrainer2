@@ -3,12 +3,12 @@ using PersonalTrainerApi.Model.Database.Context;
 using PersonalTrainerApi.Model.Database.Entity;
 using PersonalTrainerApi.Model.Dto.Product;
 using PersonalTrainerApi.Model.Types;
+using PersonalTrainerApi.Services.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace PersonalTrainerApi.Services
+namespace PersonalTrainerApi.Services.Products
 {
     public class ProductManagement : IProductManagement
     {
@@ -193,18 +193,16 @@ namespace PersonalTrainerApi.Services
             };
         }
 
-        private void DoMagic()
-        {
-
-        }
-
-        public void AddProduct(ProductDto dto)
+        /// <summary>
+        /// Dodaje produkt
+        /// </summary>
+        /// <param name="dto"><see cref="ProductDto"/></param>
+        /// <returns></returns>
+        public Guid AddProduct(ProductDto dto)
         {
             using (var trans = context.Database.BeginTransaction())
             {
                 if (dto == null) throw new ArgumentNullException(nameof(dto));
-
-                dto.UserId = userManagement.GetCurrentUserId();
 
                 var productId = Guid.NewGuid();
                 Int32 productType = GetProductTypeValue(dto.Type);
@@ -236,6 +234,7 @@ namespace PersonalTrainerApi.Services
 
                 context.SaveChanges();
                 trans.Commit();
+                return productId;
             }
         }
 

@@ -4,15 +4,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PersonalTrainerApi.Model.Database.Context;
 using Microsoft.EntityFrameworkCore;
-using PersonalTrainerApi.Services;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Net;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using System.IO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PersonalTrainerApi.Model.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using PersonalTrainerApi.Services.Users;
+using PersonalTrainerApi.Services.Products;
+using PersonalTrainerApi.Services.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace PersonalTrainerApi
 {
@@ -37,18 +39,7 @@ namespace PersonalTrainerApi
 
             services
                 .AddMemoryCache();
-           
-            if (hostingEnvironment.IsDevelopment())
-            {
-                services.AddMvc(opts =>
-                {
-                    // opts.Filters.Add(new AllowAnonymousFilter());
-                });
-            }
-            else
-            {
                 services.AddMvc();
-            }
 
             #region Kestrel
             services.Configure<KestrelServerOptions>(options =>
@@ -71,8 +62,10 @@ namespace PersonalTrainerApi
 
             // Ustawienie serwisów
             services.AddSingleton<IUserManagement, UserManagement>();
+            services.AddSingleton<IUserGoalsManagement, UserGoalsManagement>();
             services.AddSingleton<IProductManagement, ProductManagement>();
             services.AddSingleton<IAuthorizationManagement, AuthorizationManagement>();
+
             string domain = "https://personal-trainer.com/";
             services.AddAuthentication(options =>
             {

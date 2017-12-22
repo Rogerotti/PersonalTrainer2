@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PersonalTrainerApi.Services;
+using PersonalTrainerApi.Services.Products;
 using System;
 
 namespace PersonalTrainerApi.Controllers

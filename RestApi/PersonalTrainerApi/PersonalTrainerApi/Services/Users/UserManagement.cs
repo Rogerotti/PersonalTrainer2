@@ -3,15 +3,14 @@ using PersonalTrainerApi.Model.Database.Context;
 using PersonalTrainerApi.Model.Database.Entity;
 using PersonalTrainerApi.Model.Dto.Authorization;
 using PersonalTrainerApi.Resources;
+using PersonalTrainerApi.Services.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-namespace PersonalTrainerApi.Services
+namespace PersonalTrainerApi.Services.Users
 {
     public class UserManagement : IUserManagement
     {
