@@ -1,6 +1,5 @@
 ﻿using Framework.Models.ApiDto;
 using Framework.Models.Dto;
-using Framework.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,16 +16,13 @@ namespace PersonalTrainerCore.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IUserManagement userManagement;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly ILogger<LoginController> logger;
 
         public LoginController(
-            IUserManagement userManagement,
             IHttpContextAccessor httpContextAccessor,
             ILogger<LoginController> logger)
         {
-            this.userManagement = userManagement;
             this.httpContextAccessor = httpContextAccessor;
             this.logger = logger;
         }
@@ -47,15 +43,24 @@ namespace PersonalTrainerCore.Controllers
                 var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(payload));
                 var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
                 var result = await client.PostAsync(ApiUrls.LoginUrl, httpContent);
+                var session = httpContextAccessor.HttpContext.Session;
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     SessionDto res = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync(), typeof(SessionDto)) as SessionDto;
-                    var session = httpContextAccessor.HttpContext.Session;
                     session.Clear();
                     session.SetString("userId", res.UserId.ToString());
                     session.SetString("session-token", res.Token);
                     session.SetString("username", res.Username);
                     session.SetString("IsAdmin", res.Admin.ToString());
+                }
+                else
+                {
+                    var message = await result.Content.ReadAsStringAsync();
+                    ModelState.TryAddModelError("AdditionalValidation", message);
+                    logger.LogDebug("Logowanie przez użytkownika", new[] { message });
+                    httpContextAccessor.HttpContext.Session.Clear();
+                    session.Clear();
+                    return View(user);
                 }
 
             }

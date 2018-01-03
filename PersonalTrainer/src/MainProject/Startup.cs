@@ -1,10 +1,7 @@
-﻿using Framework.DataBaseContext;
-using Framework.Services;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MainProject.ViewNavigator;
@@ -16,7 +13,6 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 
 namespace MainProject
 {
@@ -42,25 +38,11 @@ namespace MainProject
         public void ConfigureServices(IServiceCollection services)
         {
 
-            var connection = @"Server=(localdb)\MSSQLLocalDB;Database=PersonalTrainer;Trusted_Connection=True;";
-            services.AddDbContext<DefaultContext>(
-                options => options.UseSqlServer(connection, b => b.MigrationsAssembly("MainProject"))
-                , ServiceLifetime.Singleton);
-
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
-            services.AddAuthentication().AddFacebook(facebookOptions =>
-            {
-                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
-
-
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IUserManagement, UserManagement>();
-            services.AddScoped<IProductManagement, ProductManagement>();
             // services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             var mvcBuilder = services.AddMvc()

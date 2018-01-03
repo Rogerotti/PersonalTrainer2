@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalTrainerApi.Model.Dto.Authorization;
 using PersonalTrainerApi.Model.Dto.User;
@@ -64,6 +65,10 @@ namespace PersonalTrainerApi.Controllers
             {
                 var session = userManagement.Login(user.Username, user.Password);
                 return Ok(session);
+            }
+            catch (UnauthorizedAccessException exc)
+            {
+                return StatusCode(403, exc.Message);
             }
             catch (Exception exc)
             {

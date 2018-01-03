@@ -7,10 +7,6 @@ namespace PersonalTrainerDiet.Controllers
 {
     public class AddProductTableViewComponent : ViewComponent
     {
-        public AddProductTableViewComponent()
-        {
-        }
-
         public async Task<IViewComponentResult> InvokeAsync(IEnumerable<ProductDto> products)
         {
             return await Task.Run(() =>

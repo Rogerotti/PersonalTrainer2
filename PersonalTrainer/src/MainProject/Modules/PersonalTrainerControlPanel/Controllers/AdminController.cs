@@ -1,7 +1,6 @@
 ﻿using Framework.Models;
 using Framework.Models.ApiDto;
 using Framework.Models.Dto;
-using Framework.Services;
 using Framework.ValidationAttributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +17,10 @@ namespace PersonalTrainerControlPanel.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly IUserManagement userManagement;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IProductManagement productManagement;
 
-        public AdminController(
-            IUserManagement userManagement,
-            IHttpContextAccessor httpContextAccessor,
-            IProductManagement productManagement)
+        public AdminController(IHttpContextAccessor httpContextAccessor)
         {
-            this.userManagement = userManagement;
-            this.productManagement = productManagement;
             this.httpContextAccessor = httpContextAccessor;
         }
 
@@ -227,7 +219,7 @@ namespace PersonalTrainerControlPanel.Controllers
                 var result = await client.GetAsync(url);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                   var productList = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync(), typeof(IEnumerable<ProductDto>)) as IEnumerable<ProductDto>;
+                    var productList = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync(), typeof(IEnumerable<ProductDto>)) as IEnumerable<ProductDto>;
                     return View(productList);
                 }
             }
@@ -265,7 +257,6 @@ namespace PersonalTrainerControlPanel.Controllers
                 };
                 return new JsonResult(userDto);
             }
-
             return new JsonResult(new UserDto());
         }
     }

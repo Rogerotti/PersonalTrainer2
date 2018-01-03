@@ -22,13 +22,11 @@ namespace PersonalTrainerApi.Services.Products
             this.userManagement = userManagement;
         }
 
-        public void SubmitDailyFood(DateTime date, IEnumerable<DailyFoodProductDto> food)
+        public void SubmitDailyFood(Guid userId, DateTime date, IEnumerable<DailyFoodProductDto> food)
         {
             using (var trans = context.Database.BeginTransaction())
             {
-                var guid = userManagement.GetCurrentUserId();
-
-                var day = context.DailyFood.Where(x => x.UserId.Equals(guid) &&
+                var day = context.DailyFood.Where(x => x.UserId.Equals(userId) &&
                     x.Date.Year == date.Year &&
                     x.Date.Month == date.Month &&
                     x.Date.Day == date.Day)
@@ -67,7 +65,7 @@ namespace PersonalTrainerApi.Services.Products
                     context.DailyFood.Add(new DayFoodDiary()
                     {
                         Date = date,
-                        UserId = guid,
+                        UserId = userId,
                         DayId = dailyFoodId,
                         TotalCalories = TotalCalories,
                         TotalFat = TotalFat,

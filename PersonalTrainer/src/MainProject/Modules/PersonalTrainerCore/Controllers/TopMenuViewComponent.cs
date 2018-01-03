@@ -1,5 +1,4 @@
 ﻿using Framework.Models.Dto;
-using Framework.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PersonalTrainerCore.Session;
@@ -13,14 +12,11 @@ namespace PersonalTrainerCore.Controllers
     /// </summary>
     public class TopMenuViewComponent : ViewComponent
     {
-        private readonly IUserManagement userManagement;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public TopMenuViewComponent(
-            IUserManagement userManagement,
             IHttpContextAccessor httpContextAccessor)
         {
-            this.userManagement = userManagement;
             this.httpContextAccessor = httpContextAccessor;
         }
 

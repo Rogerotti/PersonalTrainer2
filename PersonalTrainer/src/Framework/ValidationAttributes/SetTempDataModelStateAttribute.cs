@@ -2,15 +2,13 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Framework.ValidationAttributes
 {
 
-        public class SetTempDataModelStateAttribute : ActionFilterAttribute
+    public class SetTempDataModelStateAttribute : ActionFilterAttribute
         {
             public override void OnActionExecuted(ActionExecutedContext filterContext)
             {
@@ -54,8 +52,4 @@ namespace Framework.ValidationAttributes
                 }
             }
         }
-
-        public class test123
-    {
-    }
 }

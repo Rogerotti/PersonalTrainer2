@@ -3,6 +3,7 @@ using Framework.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using PersonalTrainerCore.Api;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -42,13 +43,13 @@ namespace PersonalTrainerCore.Controllers
 
                     var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(payload));
                     var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
-                    var result = await client.PostAsync("https://localhost:44323/api/user/register", httpContent);
+                    var result = await client.PostAsync(ApiUrls.RegisterUrl, httpContent);
 
                     client = new HttpClient();
                     var payload2 = new UserSimpleApiDto() { Username = user.Login, Password = user.Password };
                     var stringPayload2 = await Task.Run(() => JsonConvert.SerializeObject(payload2));
                     var httpContent2 = new StringContent(stringPayload2, Encoding.UTF8, "application/json");
-                    var result2 = await client.PostAsync("https://localhost:44323/api/user/login", httpContent);
+                    var result2 = await client.PostAsync(ApiUrls.LoginUrl, httpContent);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -62,7 +63,6 @@ namespace PersonalTrainerCore.Controllers
                 logger.LogDebug("rejestracja nie powiodła się.", new[] { exc.Message });
                 return View(user);
             }
-
         }
 
         [HttpGet]

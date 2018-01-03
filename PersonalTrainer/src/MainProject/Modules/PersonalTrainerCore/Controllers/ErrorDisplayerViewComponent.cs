@@ -1,9 +1,6 @@
-﻿using Framework.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PersonalTrainerCore.Controllers
 {
@@ -12,12 +9,6 @@ namespace PersonalTrainerCore.Controllers
     /// </summary>
     public class ErrorDisplayerViewComponent : ViewComponent
     {
-        private const String errorDisplayeId = nameof(errorDisplayeId);
-
-        public ErrorDisplayerViewComponent()
-        {
-        }
-
         public IViewComponentResult Invoke()
         {
              List<String> errorList = new List<String>();
@@ -27,9 +18,8 @@ namespace PersonalTrainerCore.Controllers
             {
                 if (keysEnumerator.Current.Contains("AdditionalValidation"))
                 {
-                    foreach (var item2 in ModelState[keysEnumerator.Current].Errors)
-                        errorList.Add(item2.ErrorMessage); 
-                    
+                    foreach (var item in ModelState[keysEnumerator.Current].Errors)
+                        errorList.Add(item.ErrorMessage); 
                 }
           
             }

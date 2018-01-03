@@ -9,9 +9,7 @@ namespace PersonalTrainerApi.Services.Products
         /// <summary>
         /// Rejestruje dzień żywieniowy dla podanego dnia.
         /// </summary>
-        /// <param name="date">Data dnia rejestrującego produkty.</param>
-        /// <param name="food">Lista produktów.</param>
-        void SubmitDailyFood(DateTime date, IEnumerable<DailyFoodProductDto> food);
+        void SubmitDailyFood(Guid userId, DateTime date, IEnumerable<DailyFoodProductDto> food);
 
         DailyFoodDto GetDailyFood(Guid userId, DateTime date);
 
