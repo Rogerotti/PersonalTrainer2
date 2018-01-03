@@ -1,7 +1,7 @@
-﻿using Framework.Model;
-using PersonalTrainerApi.Model.Database.Context;
+﻿using PersonalTrainerApi.Model.Database.Context;
 using PersonalTrainerApi.Model.Database.Entity;
 using PersonalTrainerApi.Model.Dto.Authorization;
+using PersonalTrainerApi.Model.Dto.User;
 using PersonalTrainerApi.Resources;
 using PersonalTrainerApi.Services.Authorization;
 using System;
@@ -254,7 +254,7 @@ namespace PersonalTrainerApi.Services.Users
         {
             return new UserDto()
             {
-                Id = user.UserId.ToString(),
+                Id = user.UserId,
                 UserState = user.UserState,
                 Age = userDetails.Age,
                 Height = userDetails.Height,
