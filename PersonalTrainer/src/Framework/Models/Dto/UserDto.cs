@@ -28,7 +28,7 @@ namespace Framework.Models.Dto
         [Required(ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.PasswordRequired))]
         [JsonProperty(nameof(Password))]
-        [StringLength(20, MinimumLength = 5, 
+        [StringLength(15, MinimumLength = 8, 
         ErrorMessageResourceType = typeof(ErrorLanguage),
         ErrorMessageResourceName = nameof(ErrorLanguage.PasswordLength))]
 
@@ -63,7 +63,7 @@ namespace Framework.Models.Dto
         /// 2 = kobieta.
         /// 9 = nie zaaplikowano.
         /// </summary>
-        public Int32 Gender { get; set; }
+        public Int32? Gender { get; set; }
 
         [JsonProperty(nameof(Weight))]
         [Required(ErrorMessageResourceType = typeof(ErrorLanguage),

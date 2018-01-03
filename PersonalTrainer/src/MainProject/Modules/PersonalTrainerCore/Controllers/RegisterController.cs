@@ -38,7 +38,7 @@ namespace PersonalTrainerCore.Controllers
                         Administrator = false,
                         Age = user.Age,
                         Email = user.Email,
-                        Gender = user.Gender,
+                        Gender = (user.Gender == null) ? 0 : (Int32)user.Gender,
                     };
 
                     var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(payload));
@@ -68,7 +68,7 @@ namespace PersonalTrainerCore.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(new UserDto());
+            return View(new UserDto() {Gender = null });
         }
     }
 }

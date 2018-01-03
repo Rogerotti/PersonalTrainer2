@@ -86,16 +86,11 @@
                 <div class="centered column">
                     <div class="field">
                         <label>@Framework.Resources.UserLanguage.Gender</label>
-                        <div class="ui selection dropdown" asp-for="Gender">
-                            <input name="gender" type="hidden">
-                            <i class="dropdown icon"></i>
-                            <div class="default text">@Framework.Resources.UserLanguage.Gender</div>
-                            <div class="menu">
-                                <div class="item" data-value="1">@Framework.Resources.UserLanguage.Male</div>
-                                <div class="item" data-value="2">@Framework.Resources.UserLanguage.Female </div>
-                            </div>
-                        </div>
-
+                        <select class="ui dropdown"  asp-for="Gender">
+                            <option value="">@Framework.Resources.UserLanguage.Gender</option>
+                            <option value="0">@Framework.Resources.UserLanguage.Male</option>
+                            <option value="1">@Framework.Resources.UserLanguage.Female</option>
+                        </select>
                     </div>
                 </div>
 

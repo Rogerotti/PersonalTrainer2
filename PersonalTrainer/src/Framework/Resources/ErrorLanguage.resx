@@ -121,52 +121,52 @@
     <value>The age dosent request the criteria</value>
   </data>
   <data name="EmailEmpty" xml:space="preserve">
-    <value>The email is empty.</value>
+    <value>The email is empty</value>
   </data>
   <data name="EmailRegex" xml:space="preserve">
-    <value>The email is wrong.</value>
+    <value>The email format is wrong</value>
   </data>
   <data name="GenderError" xml:space="preserve">
-    <value>Gender dosent exist.</value>
+    <value>Gender dosent exist</value>
   </data>
   <data name="HeightEmpty" xml:space="preserve">
-    <value>The height is empty.</value>
+    <value>The height is empty</value>
   </data>
   <data name="LoginLenght" xml:space="preserve">
-    <value>Login should have size between 3 and 20 characters.</value>
+    <value>Login should have size between 3 and 20 characters</value>
   </data>
   <data name="LoginRequired" xml:space="preserve">
-    <value>Login is required.</value>
+    <value>Login is required</value>
   </data>
   <data name="PasswordLength" xml:space="preserve">
-    <value>Password should have length between 5 and 20 characters.</value>
+    <value>Password should have length between 8 and 15 characters</value>
   </data>
   <data name="PasswordNotMatch" xml:space="preserve">
-    <value>Password do not match.</value>
+    <value>Password do not match</value>
   </data>
   <data name="PasswordRegex" xml:space="preserve">
-    <value>The password is wrong.</value>
+    <value>The password format is wrong. Expect 8 characters, 1 big letter, 1 number, 1 special character</value>
   </data>
   <data name="PasswordRequired" xml:space="preserve">
-    <value>Password is required.</value>
+    <value>Password required</value>
   </data>
   <data name="UsernameEmpty" xml:space="preserve">
-    <value>The username is empty.</value>
+    <value>The username is empty</value>
   </data>
   <data name="UsernameExist" xml:space="preserve">
-    <value>Username already exist.</value>
+    <value>Username already exist</value>
   </data>
   <data name="UsernameLength" xml:space="preserve">
-    <value>Username should have size between 3 and 20 characters.</value>
+    <value>Username should have size between 3 and 20 characters</value>
   </data>
   <data name="UserNameOrPasswordWrong" xml:space="preserve">
     <value>Wrong username or password</value>
   </data>
   <data name="UserNotLoggedIn" xml:space="preserve">
-    <value>User is not logged in.</value>
+    <value>User is not logged in</value>
   </data>
   <data name="WeightEmpty" xml:space="preserve">
-    <value>The weight is empty.</value>
+    <value>The weight is empty</value>
   </data>
   <data name="ValidationError" xml:space="preserve">
     <value>Validation error</value>

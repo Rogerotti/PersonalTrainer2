@@ -118,52 +118,52 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AgeRange" xml:space="preserve">
-    <value>Wiek nie spełnia kryteriów.</value>
+    <value>Wiek nie spełnia kryteriów</value>
   </data>
   <data name="EmailEmpty" xml:space="preserve">
-    <value>Adres email jest pusty.</value>
+    <value>Adres email jest pusty</value>
   </data>
   <data name="EmailRegex" xml:space="preserve">
-    <value>Podany adres email jest nieprawidłowy.</value>
+    <value>Podany adres email jest nieprawidłowy</value>
   </data>
   <data name="GenderError" xml:space="preserve">
-    <value>Podana płeć nie istnieje w systemie.</value>
+    <value>Podana płeć nie istnieje w systemie</value>
   </data>
   <data name="HeightEmpty" xml:space="preserve">
-    <value>Wzrost jest pusty.</value>
+    <value>Wzrost jest pusty</value>
   </data>
   <data name="LoginLenght" xml:space="preserve">
-    <value>Długość loginu powinna zawierać się pomiędzy 3 i 20 znakami.</value>
+    <value>Długość loginu powinna zawierać się pomiędzy 3 i 20 znakami</value>
   </data>
   <data name="LoginRequired" xml:space="preserve">
-    <value>Login jest wymagany.</value>
+    <value>Login jest wymagany</value>
   </data>
   <data name="PasswordLength" xml:space="preserve">
-    <value>Długość hasła powinna zawierać się pomiędzy 5 i 20 znakami.</value>
+    <value>Długość hasła powinna zawierać się pomiędzy 8 i 15 znakami</value>
   </data>
   <data name="PasswordNotMatch" xml:space="preserve">
-    <value>Hasło nie pasuje.</value>
+    <value>Hasło nie pasuje</value>
   </data>
   <data name="PasswordRegex" xml:space="preserve">
-    <value>Podany format hasła  jest nieprawidłowy.</value>
+    <value>Podany format hasła  jest nieprawidłowy. Wymagane 8 znaków, 1 znak specjalny, 1 duża litera, 1 cyfra</value>
   </data>
   <data name="PasswordRequired" xml:space="preserve">
-    <value>Hasło jest wymagane.</value>
+    <value>Hasło jest wymagane</value>
   </data>
   <data name="UsernameEmpty" xml:space="preserve">
-    <value>Podana nazwa użytkownika jest pusta.</value>
+    <value>Podana nazwa użytkownika jest pusta</value>
   </data>
   <data name="UsernameExist" xml:space="preserve">
-    <value>Użytkownik już istnieje.</value>
+    <value>Użytkownik już istnieje</value>
   </data>
   <data name="UsernameLength" xml:space="preserve">
-    <value>Długość nazwy użytkownika powinna zawierać się pomiędzy 3 i 20 znakami.</value>
+    <value>Długość nazwy użytkownika powinna zawierać się pomiędzy 3 i 20 znakami</value>
   </data>
   <data name="UserNameOrPasswordWrong" xml:space="preserve">
-    <value>Podana nazwa użytkownika lub hasło jest niepoprawne.</value>
+    <value>Podana nazwa użytkownika lub hasło jest niepoprawne</value>
   </data>
   <data name="UserNotLoggedIn" xml:space="preserve">
-    <value>Użytkownik nie jest zalogowany.</value>
+    <value>Użytkownik nie jest zalogowany</value>
   </data>
   <data name="WeightEmpty" xml:space="preserve">
     <value>Waga jest pusta</value>
