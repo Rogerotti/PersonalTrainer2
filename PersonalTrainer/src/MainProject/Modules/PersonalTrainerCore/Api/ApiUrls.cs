@@ -25,6 +25,7 @@
 
         public static string SubscribeProduct = apiUrl + "api/Product/Subscribe/#ID#";
         public static string AcceptSubscriptionProduct = apiUrl + "api/Product/AcceptSubscription/#ID#";
+        public static string CancelSubscriptionProduct = apiUrl + "api/Product/CancelSubscription/#ID#";
         public static string DeclineSubscriptionProduct = apiUrl + "api/Product/DeclineSubscription/#ID#";
 
         

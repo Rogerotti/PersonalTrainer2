@@ -70,6 +70,15 @@ namespace PersonalTrainerApi.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nie znaleziono użytkownika.
+        /// </summary>
+        internal static string AccountNotFound {
+            get {
+                return ResourceManager.GetString("AccountNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zła nazwa użytkownika lub hasło.
         /// </summary>
         internal static string BadUsernameOrPassword {

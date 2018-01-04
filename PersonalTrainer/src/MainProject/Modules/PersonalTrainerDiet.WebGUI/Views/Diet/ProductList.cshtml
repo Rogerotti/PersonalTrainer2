@@ -43,16 +43,16 @@
 
             <form id="showTest" method="post" asp-controller="Diet" asp-action="ProductList" >
 
-                <table id="table" class="ui sortable selectable celled  table" >
+                <table id="table" class="ui sortable selectable celled  table">
 
                         <thead>
                             <tr>
                                 <th hidden>Id column</th>
                                 <th class="sorted ascending">@Framework.Resources.ProductLanguage.ProductName</th>
-                                <th>@Framework.Resources.ProductLanguage.Calories</th>
-                                <th>@Framework.Resources.ProductLanguage.Carbs</th>
-                                <th>@Framework.Resources.ProductLanguage.Fat</th>
-                                <th>@Framework.Resources.ProductLanguage.Protein</th>
+                                <th > @Framework.Resources.ProductLanguage.Calories</th>
+                                <th >@Framework.Resources.ProductLanguage.Carbs</th>
+                                <th >@Framework.Resources.ProductLanguage.Fat</th>
+                                <th >@Framework.Resources.ProductLanguage.Protein</th>
                             </tr>
                         </thead>
 
@@ -78,10 +78,10 @@
                                }
                                     <td hidden><input id="selectedProductId" type="hidden" value="@item.ProductId" /></td>
                                     <td>@item.Name</td>
-                                    <td>@item.Macro.Calories</td>
-                                    <td>@item.Macro.Carbohydrates</td>
-                                    <td>@item.Macro.Fat</td>
-                                    <td>@item.Macro.Protein</td>
+                                    <td data-sort-value="@item.Macro.Calories">@item.Macro.Calories</td>
+                                    <td data-sort-value="@item.Macro.Carbohydrates">@item.Macro.Carbohydrates</td>
+                                    <td data-sort-value="@item.Macro.Fat">@item.Macro.Fat</td>
+                                    <td data-sort-value="@item.Macro.Protein">@item.Macro.Protein</td>
                             }
                                 </tr>
                     </tbody>
@@ -185,7 +185,7 @@
     <script>
 
         $(document).ready(function () {
-            $('.sortable.table').tablesort();
+            $('.sortable.selectable.table').tablesort();
         });
 
         function showDetails(b)

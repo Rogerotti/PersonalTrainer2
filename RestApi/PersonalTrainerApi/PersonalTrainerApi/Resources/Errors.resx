@@ -120,6 +120,9 @@
   <data name="AccountDeleted" xml:space="preserve">
     <value>Konto zostało usunięte</value>
   </data>
+  <data name="AccountNotFound" xml:space="preserve">
+    <value>Nie znaleziono użytkownika</value>
+  </data>
   <data name="BadUsernameOrPassword" xml:space="preserve">
     <value>Zła nazwa użytkownika lub hasło</value>
   </data>

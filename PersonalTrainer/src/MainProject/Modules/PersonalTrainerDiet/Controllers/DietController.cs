@@ -125,6 +125,11 @@ namespace PersonalTrainerDiet.Controllers
 
                 return View(dayView);
             }
+            else if (result.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                return RedirectToAction("UserGoals", "Diet");
+
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -399,7 +404,7 @@ namespace PersonalTrainerDiet.Controllers
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
 
-            var url = ApiUrls.DeclineSubscriptionProduct.Replace("#ID#", productCancelSubscribeId);
+            var url = ApiUrls.CancelSubscriptionProduct.Replace("#ID#", productCancelSubscribeId);
             var result = await client.PostAsync(url, new StringContent(""));
 
             if (result.StatusCode != System.Net.HttpStatusCode.OK)
@@ -439,7 +444,10 @@ namespace PersonalTrainerDiet.Controllers
 
                 return View(view);
             }
-            else {
+            else if (result.StatusCode == System.Net.HttpStatusCode.NoContent)
+                return View(new UserGoalsView());
+            else
+            {
                 ModelState.AddModelError("AdditionalValidation", await result.RequestMessage.Content.ReadAsStringAsync());
                 return View();
             }

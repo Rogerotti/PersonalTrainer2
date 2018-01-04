@@ -27,11 +27,11 @@
                         <input type="checkbox"  name="testt" onclick="calc(this)" />
                     </td>
                     <td>@product.Name</td>
-                    <td>@product.Macro.Calories</td>
-                    <td>@product.Macro.Carbohydrates</td>
-                    <td>@product.Macro.Fat</td>
-                    <td>@product.Macro.Protein</td>
-                    <td><input class="test2" name="quantity" type="text" value="@product.Macro.Quantity" /></td>
+                    <td data-sort-value="@product.Macro.Calories">@product.Macro.Calories</td>
+                    <td data-sort-value="@product.Macro.Carbohydrates">@product.Macro.Carbohydrates</td>
+                    <td data-sort-value="@product.Macro.Fat">@product.Macro.Fat</td>
+                    <td data-sort-value="@product.Macro.Protein">@product.Macro.Protein</td>
+                    <td class="no-sort"><input class="test2" name="quantity" type="text" value="@product.Macro.Quantity" /></td>
                 </tr>
             }
         </tbody>

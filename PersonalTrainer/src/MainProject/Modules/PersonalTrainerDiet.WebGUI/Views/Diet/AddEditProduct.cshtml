@@ -157,11 +157,6 @@
                 var selectionLength = this.selectionEnd - this.selectionStart
                 if (selectionLength != this.value.length)
                 {
-                    if (this.value.includes("0") && this.value.includes(",") === false && e.keyCode !== 188) {
-                        e.preventDefault();
-                        return;
-                    }
-
                     if (this.value[0] === 0 && this.value.includes(",") && e.keyCode !== 188) {
                         e.preventDefault();
                         return;

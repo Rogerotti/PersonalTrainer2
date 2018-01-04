@@ -85,9 +85,11 @@ namespace PersonalTrainerApi.Services.Users
         {
             var userList = context.User.ToList();
             if (!userList.Any()) throw new UnauthorizedAccessException(Errors.ServerError);
+            if (String.IsNullOrWhiteSpace(username)) throw new NullReferenceException(nameof(username));
+            if (String.IsNullOrWhiteSpace(password)) throw new NullReferenceException(nameof(password));
 
             var user = userList.FirstOrDefault(x => x.UserName.ToLower().Equals(username.ToLower()));
-
+            if (user == null) throw new UnauthorizedAccessException(Errors.AccountNotFound);
             if (user.UserState == 2) throw new UnauthorizedAccessException(Errors.AccountDeleted);
 
             byte[] salt = Convert.FromBase64String(user.Salt);

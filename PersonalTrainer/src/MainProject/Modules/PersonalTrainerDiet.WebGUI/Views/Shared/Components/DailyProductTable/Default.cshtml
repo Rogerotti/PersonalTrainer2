@@ -29,11 +29,11 @@
                 <tr>
                     <td hidden id="@item.Product.ProductId"><input type="hidden" /></td>
                     <td >@item.Product.Name</td>
-                    <td name="productProtein">@item.CurrentMacro.Protein</td>
-                    <td name="productFat">@item.CurrentMacro.Fat</td>
-                    <td name="productCarbs">@item.CurrentMacro.Carbohydrates</td>
-                    <td name="productCalories">@item.CurrentMacro.Calories</td>
-                    <td>
+                    <td data-sort-value="@item.CurrentMacro.Protein" name="productProtein">@item.CurrentMacro.Protein</td>
+                    <td data-sort-value="@item.CurrentMacro.Fat" name="productFat">@item.CurrentMacro.Fat</td>
+                    <td data-sort-value="@item.CurrentMacro.Carbohydrates" name="productCarbs">@item.CurrentMacro.Carbohydrates</td>
+                    <td data-sort-value="@item.CurrentMacro.Calories" name="productCalories">@item.CurrentMacro.Calories</td>
+                    <td class="no-sort">
                         <div class="ui input ChangeMacro">
                             <input class="NumericValidation" name="quantity" type="text" value="@item.CurrentMacro.Quantity" />
                         </div>
