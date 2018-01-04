@@ -146,7 +146,7 @@ namespace PersonalTrainerApi.Services.Products
 
                     };
                     var food = foodTypes.FirstOrDefault(x => x.ProductId.Equals(item.ProductId));
-                    var ration = (decimal)food.Quantity / productDetails.Quantity;
+                    var ration = (decimal)food.Quantity / (productDetails.Quantity == 0 ? 1 : productDetails.Quantity);
                     var currentQuant = food.Quantity;
                     var currentCalories = Math.Round(productDetails.Calories * ration, 2);
                     var currentFat = Math.Round(productDetails.Fat * ration, 2);

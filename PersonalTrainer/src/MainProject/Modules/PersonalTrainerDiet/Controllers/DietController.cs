@@ -158,7 +158,7 @@ namespace PersonalTrainerDiet.Controllers
                 client.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
                 var url = ApiUrls.SubmitDayMeal
                     .Replace("#USERID#", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.UserId))
-                    .Replace("#DATE#", Day.ToShortTimeString());
+                    .Replace("#DATE#", Day.ToString("yyyy-MM-ddTHH:mm:ss"));
 
                 var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(food));
                 var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
