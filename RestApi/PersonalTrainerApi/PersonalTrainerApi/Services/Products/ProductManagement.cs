@@ -584,7 +584,7 @@ namespace PersonalTrainerApi.Services.Products
             {
                 var p = GetProduct(item.ProductId);
                 var quantity = item.ProductQuantity;
-                var res = (decimal)quantity / p.Macro.Quantity;
+                var res = (decimal)quantity / (p.Macro.Quantity != 0 ? p.Macro.Quantity : 1);
                 var currentMacro = new Macro()
                 {
                     QuantityType = p.Macro.QuantityType,

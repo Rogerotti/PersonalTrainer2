@@ -248,13 +248,13 @@
             var newQuant = input.val();
             var tr = $(this).parent().parent();
 
-            var quant = parseFloat(tr[0].cells[9].children[0].value.replace(/,/, '.'));
-            var prevProtein = parseFloat(tr[0].cells[10].children[0].value.replace(/,/, '.'));
-            var prevFat = parseFloat(tr[0].cells[11].children[0].value.replace(/,/, '.'));
-            var prevCarb = parseFloat(tr[0].cells[12].children[0].value.replace(/,/, '.'));
-            var prevCalories = parseFloat(tr[0].cells[13].children[0].value.replace(/,/, '.'));
+            const quant = parseFloat(tr[0].cells[9].children[0].value.replace(/,/, '.'));
+            const prevProtein = parseFloat(tr[0].cells[10].children[0].value.replace(/,/, '.'));
+            const prevFat = parseFloat(tr[0].cells[11].children[0].value.replace(/,/, '.'));
+            const prevCarb = parseFloat(tr[0].cells[12].children[0].value.replace(/,/, '.'));
+            const prevCalories = parseFloat(tr[0].cells[13].children[0].value.replace(/,/, '.'));
 
-            var ratio = Math.round(newQuant * 100.0 / quant) / 100
+            const ratio = Math.round(newQuant * 100.0 / (quant === 0 ? 1 : quant) ) / 100
 
             tr[0].cells[2].innerHTML = (Math.round(prevProtein * ratio * 100) / 100).toString().replace('.', ',');
             tr[0].cells[3].innerHTML = (Math.round(prevFat * ratio * 100) / 100).toString().replace('.', ',');
@@ -264,7 +264,7 @@
             UpdateCurrenCalories()
         });
 
-        $('.BreakfestTable').on('click', ".DeleteMacro", function (e) {
+        $('.BreakfestTable').on('click', ".DeleteMacro", (e) => {
             var tr = $(this).parent().parent();
             var body = tr.parent();
             var table = body.parent();
