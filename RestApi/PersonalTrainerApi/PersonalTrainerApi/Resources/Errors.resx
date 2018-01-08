@@ -126,7 +126,13 @@
   <data name="BadUsernameOrPassword" xml:space="preserve">
     <value>Zła nazwa użytkownika lub hasło</value>
   </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Nie podano hasła</value>
+  </data>
   <data name="ServerError" xml:space="preserve">
     <value>Błąd serwera</value>
+  </data>
+  <data name="UsernameEmpty" xml:space="preserve">
+    <value>Nie podano użytkownika</value>
   </data>
 </root>
