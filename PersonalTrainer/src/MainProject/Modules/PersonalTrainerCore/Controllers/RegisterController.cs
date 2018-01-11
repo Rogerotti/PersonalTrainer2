@@ -1,5 +1,7 @@
-﻿using Framework.Models.ApiDto;
+﻿using Framework.Models;
+using Framework.Models.ApiDto;
 using Framework.Models.Dto;
+using Framework.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -21,12 +23,23 @@ namespace PersonalTrainerCore.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Index(UserDto user)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    /*
+                    HttpClient recaptchaClient = new HttpClient();
+                    var secret = "6LeBIUAUAAAAAKrLXCvJLqfF1vf6_RX8rk40-9KS";
+                    var recaptchaPayload = new RecaptchaDto() { Secret = secret, Response = response };
+                    var recaptchaStringPayload = await Task.Run(() => JsonConvert.SerializeObject(recaptchaPayload));
+                    var recaptchaHttpContent = new StringContent(recaptchaStringPayload, Encoding.UTF8, "application/x-www-form-urlencoded");
+                    var recaptchaResult = await recaptchaClient.PostAsync(ApiUrls.reCaptchaUrl, recaptchaHttpContent);
+                    var rr = await recaptchaResult.Content.ReadAsStringAsync();
+                    RecaptchaResult res2 = JsonConvert.DeserializeObject(await recaptchaResult.Content.ReadAsStringAsync(), typeof(RecaptchaResult)) as RecaptchaResult;
+                    */
                     HttpClient client = new HttpClient();
                     var payload = new UserApiDto()
                     {

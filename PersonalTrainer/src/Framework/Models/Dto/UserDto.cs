@@ -106,6 +106,14 @@ namespace Framework.Models.Dto
         /// Czy użytkownik jest administratorem systemu.
         /// </summary>
         public Boolean IsAdministrator { get; set; }
+
+        //sTrue(ErrorMessageResourceType = typeof(ErrorLanguage),
+        // ErrorMessageResourceName = nameof(ErrorLanguage.reCaptchaRequierd))]
+        //[AttributeUsage(ErrorMNe
+        [MessageHolder(ErrorMessageResourceType = typeof(ErrorLanguage),
+        ErrorMessageResourceName = nameof(ErrorLanguage.reCaptchaRequierd))]
+        public Boolean ReCaptcha { get; set; }
+
     }
 
     public enum HeightUnit {cm,ft,yd };

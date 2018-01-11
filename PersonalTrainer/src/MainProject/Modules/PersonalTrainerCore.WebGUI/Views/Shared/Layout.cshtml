@@ -66,6 +66,8 @@
                 <script src="~/lib/semantic/dist/semantic.js"></script>
                 <script src="https://semantic-ui.com/javascript/library/tablesort.js"></script>
                 <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.js"></script>
+                <script src='https://www.google.com/recaptcha/api.js'></script>
+
             </environment>
 
             <environment names="Staging,Production">
@@ -74,7 +76,7 @@
                         asp-fallback-test="window.jQuery">
                 </script>
 
-
+                <script src='https://www.google.com/recaptcha/api.js'></script>
                 <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.js"></script>
                 <script type="text/javascript" src="jquery.metadata.js"></script>
                 <script src="http://semantic-ui.com/javascript/library/tablesort.js"></script>
@@ -88,7 +90,6 @@
             </environment>
 
             @RenderSection("scripts", required: false)
-
             @await Component.InvokeAsync("ErrorDisplayer")
 </body>
 

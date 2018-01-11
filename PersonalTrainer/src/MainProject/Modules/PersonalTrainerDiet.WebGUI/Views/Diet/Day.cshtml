@@ -241,7 +241,6 @@
             }
         });
 
-
         $('.BreakfestTable').on('keyup', ".ChangeMacro", function (e) {
 
             var input = $(this).children();
@@ -265,7 +264,7 @@
         });
 
         $('.BreakfestTable').on('click', ".DeleteMacro", (e) => {
-            var tr = $(this).parent().parent();
+            var tr = $(e.target).parent().parent();
             var body = tr.parent();
             var table = body.parent();
             tr.remove();

@@ -4,6 +4,7 @@
     {
         private const string apiUrl = "https://localhost:44323/";
 
+        public const string reCaptchaUrl = "https://www.google.com/recaptcha/api/siteverify";
         public static string RegisterUrl = apiUrl + "api/user/register";
         public static string LoginUrl = apiUrl + "api/user/login";
         public static string LoginAdminUrl = apiUrl + "api/user/loginAdminSample";

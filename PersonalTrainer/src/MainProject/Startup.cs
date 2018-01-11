@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
+using Framework.ValidationAttributes;
 
 namespace MainProject
 {
@@ -43,6 +44,7 @@ namespace MainProject
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<ValidateReCaptchaAttribute>();
             // services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             var mvcBuilder = services.AddMvc()

@@ -104,6 +104,11 @@
                 </div>
             </div>
 
+            <div>
+                <div class="g-recaptcha" data-sitekey="6LeBIUAUAAAAAAMFvYndsTB2U94MguKJ2040MM-6"></div>
+                <span asp-validation-for="ReCaptcha" class="ui red header"></span>
+            </div>
+    
             <div class="column centered row">
                 <button class="ui blue button" type="submit">
                      @Framework.Resources.UserLanguage.Register
@@ -116,7 +121,9 @@
     </form>
 @section Scripts
     {
-        <script>  $('.ui.dropdown').dropdown('refresh');</script>
+
+        <script>$('.ui.dropdown').dropdown('refresh');</script>
+
         <!--Pozwala na wpisywanie samych liczb.-->
         <script>
             $(document).ready(function ()

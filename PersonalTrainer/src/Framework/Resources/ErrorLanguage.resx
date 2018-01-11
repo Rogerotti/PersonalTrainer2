@@ -177,4 +177,7 @@
   <data name="AccountDeleted" xml:space="preserve">
     <value>Account deleted</value>
   </data>
+  <data name="reCaptchaRequierd" xml:space="preserve">
+    <value>Potwierdź że nie jesteś robotem</value>
+  </data>
 </root>
