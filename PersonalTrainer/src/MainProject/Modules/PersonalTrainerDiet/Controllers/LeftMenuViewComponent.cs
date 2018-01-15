@@ -5,6 +5,7 @@ namespace PersonalTrainerDiet.Controllers
 {
     public class LeftMenuViewComponent : ViewComponent
     {
+
         public async Task<IViewComponentResult> InvokeAsync()
         {
             return await Task.Run(() =>

@@ -50,7 +50,7 @@ namespace PersonalTrainerDiet.Controllers
                 dayDate = id;
 
             var additionalMeal = TempData[additionalMealsId] as Boolean?;
-            if (additionalMeal == null ? false : (Boolean)additionalMeal )
+            if (additionalMeal == null ? false : (Boolean)additionalMeal)
             {
                 var guids = TempData[productGuidId] as IEnumerable<Guid>;
                 var quants = TempData[productQuantityId] as IEnumerable<Int32>;
@@ -71,7 +71,7 @@ namespace PersonalTrainerDiet.Controllers
                             MealType = (MealType)c[i]
                         });
                     }
-                    
+
                     var httpClient = new HttpClient();
                     httpClient.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
                     var uri = ApiUrls.GetDayMeals.Replace("#DATE#", dayDate.ToString("yyyy-MM-ddTHH:mm:ss"));
@@ -84,20 +84,28 @@ namespace PersonalTrainerDiet.Controllers
                     }
                 }
             }
+            else {
+                var guids = TempData[productGuidId] as IEnumerable<Guid>;
+                var quants = TempData[productQuantityId] as IEnumerable<Int32>;
+                var mealType = TempData[productMealTypeId] as IEnumerable<Int32>;
+                var enumMealType = TempData[mealTypeId] as Int32?;
+            }
 
             if (ProductDto == null)
             {
-                var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
-
-                var session = httpContextAccessor.HttpContext.Session;
-                var userId = session.GetString(SessionTypes.UserId);
-                var urlTemplate = ApiUrls.GetDayMeal.Replace("#USERID#", userId).Replace("#ID#", dayDate.ToString("yyyy-MM-ddTHH:mm:ss"));
-
-                var res = await httpClient.GetAsync(urlTemplate);
-                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                using (var httpClient = new HttpClient())
                 {
-                    ProductDto = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync(), typeof(DailyFoodDto)) as DailyFoodDto;
+                    httpClient.DefaultRequestHeaders.Add("Authorization", String.Format("Bearer \"{0}\"", httpContextAccessor.HttpContext.Session.GetString(SessionTypes.Token)));
+
+                    var session = httpContextAccessor.HttpContext.Session;
+                    var userId = session.GetString(SessionTypes.UserId);
+                    var urlTemplate = ApiUrls.GetDayMeal.Replace("#USERID#", userId).Replace("#ID#", dayDate.ToString("yyyy-MM-ddTHH:mm:ss"));
+
+                    var res = await httpClient.GetAsync(urlTemplate);
+                    if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        ProductDto = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync(), typeof(DailyFoodDto)) as DailyFoodDto;
+                    }
                 }
             }
 
@@ -122,7 +130,7 @@ namespace PersonalTrainerDiet.Controllers
                     AvaibleFat = userGoals.Fat,
                     AvaibleProteins = userGoals.Proteins,
                 };
-
+                client.Dispose();
                 return View(dayView);
             }
             else if (result.StatusCode == System.Net.HttpStatusCode.NoContent)
